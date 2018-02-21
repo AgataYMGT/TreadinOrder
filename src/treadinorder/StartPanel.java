@@ -4,6 +4,7 @@
 
 package treadinorder;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,7 +24,6 @@ public class StartPanel extends JPanel implements Runnable {
 	private static enum Dists {
 		debian, ubuntu, linuxmint, redhat, fedora, centos
 	};
-	private final float distDrawWidth[] = {-2.5f, -1.5f, -0.5f, 0.5f, 1.5f, 2.5f};
 	
 	// ロゴ
 	private BufferedImage logo;
@@ -31,6 +31,7 @@ public class StartPanel extends JPanel implements Runnable {
 	
 	// フォントとラベル
 	private Font genFont;
+	private JLabel descriLabel;
 	private JLabel beginLabel;
 	
 	// スレッド
@@ -72,21 +73,30 @@ public class StartPanel extends JPanel implements Runnable {
 			distBox.add(distLogos[i]);
 		}
 		distBox.setSize(distLogos[0].getWidth() * 6, distLogos[0].getHeight());
-		distBox.setLocation(xToDrawCenter(distBox.getWidth()), (int)(panelHeight * 0.3));
+		distBox.setLocation(xToDrawCenter(distBox.getWidth()), (int)(panelHeight * 0.35));
 		
 		// 全体フォントの設定
 		genFont = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 48);
 				
-		// ラベルの設定
-		beginLabel = new JLabel("ゲームスタート");
+		// 説明ラベルの設定
+		descriLabel = new JLabel("<html>制限時間内に指示された<br>順番でタイルの上を歩け!</html>");
+		descriLabel.setFont(genFont);
+		descriLabel.setForeground(new Color(0xbd0d0d));
+		descriLabel.setSize(descriLabel.getPreferredSize());
+		descriLabel.setHorizontalAlignment(JLabel.CENTER);
+		descriLabel.setLocation(xToDrawCenter(descriLabel.getWidth()), (int)(panelHeight * 0.22));
+		
+		// ゲームスタートラベルの設定
+		beginLabel = new JLabel("ゲームスタート（Spaceキー）");
 		beginLabel.setFont(genFont);
 		beginLabel.setSize(beginLabel.getPreferredSize());
-		beginLabel.setBounds(xToDrawCenter(beginLabel.getWidth()), (int)(panelHeight * 0.55), beginLabel.getWidth(), beginLabel.getHeight());
+		beginLabel.setLocation(xToDrawCenter(beginLabel.getWidth()), (int)(panelHeight * 0.6));
 		
 		// マウスリスナーに登録
 		beginLabel.addMouseListener(new SpLabelListener(beginLabel));
 		
 		// 各コンポーネントをラベルに追加
+		this.add(descriLabel);
 		this.add(distBox);
 		this.add(beginLabel);
 		
@@ -103,7 +113,7 @@ public class StartPanel extends JPanel implements Runnable {
 		int drawWidth, drawHeight;
 		// ロゴの描画
 		drawWidth = xToDrawCenter(logo.getWidth());
-		drawHeight = (int)(panelHeight * 0.15);
+		drawHeight = (int)(panelHeight * 0.1);
 		g2.drawImage(logo, drawWidth, drawHeight, logo.getWidth(), logo.getHeight(), this);
 	}
 	
