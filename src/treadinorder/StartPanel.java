@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
-public class StartPanel extends JPanel implements Runnable {
+public class StartPanel extends JPanel {
 	private int panelWidth, panelHeight;
 	
 	private static enum Dists {
@@ -35,14 +35,7 @@ public class StartPanel extends JPanel implements Runnable {
 	private JLabel descriLabel;
 	private JLabel beginLabel;
 	
-	// スレッド
-	private Thread th;
-	
-	// メインパネル
-	private MainPanel mp;
-	
 	public StartPanel(MainPanel mp) {
-		this.mp = mp;
 		this.panelWidth = mp.panelWidth;
 		this.panelHeight = mp.panelHeight;
 		
@@ -101,10 +94,6 @@ public class StartPanel extends JPanel implements Runnable {
 		this.add(descriLabel);
 		this.add(distBox);
 		this.add(beginLabel);
-		
-		// スレッドの生成,実行（並列処理開始）
-		th = new Thread(this);
-		th.start();
 	}
 	
 	@Override
@@ -128,17 +117,5 @@ public class StartPanel extends JPanel implements Runnable {
 	 */
 	public int xToDrawCenter(int objWidth) {
 		return (panelWidth - objWidth) / 2;
-	}
-	
-	// スレッド
-	public void run() {
-		while(true) {
-			repaint();
-			try {
-				Thread.sleep(100L);	// 100ms待機
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
