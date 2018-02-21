@@ -5,12 +5,9 @@
 package treadinorder.eventlistener;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 
 public class SpLabelListener implements MouseListener {

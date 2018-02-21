@@ -7,11 +7,11 @@ package treadinorder;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -27,7 +27,7 @@ public class StartPanel extends JPanel implements Runnable {
 	
 	// ロゴ
 	private BufferedImage logo;
-	private BufferedImage[] distLogos;
+	private DistLogo[] distLogos;
 	
 	// フォントとラベル
 	private Font genFont;
@@ -48,21 +48,31 @@ public class StartPanel extends JPanel implements Runnable {
 		this.setLayout(null);
 		
 		// 各画像の読み込み
-		distLogos = new BufferedImage[Dists.values().length];
+		distLogos = new DistLogo[Dists.values().length];
 		try {
 			// ロゴの読み込み
 			logo = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
-			// ディストリの数だけ読み込み
-			short cnt = 0;
+			// ディストリの数だけロゴを読み込む
+			short i = 0;
 			for(Dists dist : Dists.values()) {
-				BufferedImage distLogo = ImageIO.read(this.getClass().getResource("assets/" + dist.name() + "400.png"));
-				// 読み込んだ画像を縮小して新たなオブジェクトを生成
-				distLogos[cnt] = biResize(distLogo, distLogo.getWidth() / 2, distLogo.getWidth() / 2);
-				cnt++;
+				// DistLogoインスタンスを作成
+				distLogos[i] = new DistLogo(this.getClass().getResource("assets/" + dist.name() + "400.png"));
+				// 縦横を0.5倍にする
+				distLogos[i].setScale(distLogos[i].getWidth() / 2, distLogos[i].getHeight() / 2);
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// ディストリロゴの描画
+		// ボックスを作ってBoxLayoutの配置にする
+		Box distBox = Box.createHorizontalBox();
+		for(int i = 0; i < distLogos.length; i++) {
+			distBox.add(distLogos[i]);
+		}
+		distBox.setSize(distLogos[0].getWidth() * 6, distLogos[0].getHeight());
+		distBox.setLocation(xToDrawCenter(distBox.getWidth()), (int)(panelHeight * 0.3));
 		
 		// 全体フォントの設定
 		genFont = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 48);
@@ -75,7 +85,9 @@ public class StartPanel extends JPanel implements Runnable {
 		
 		// マウスリスナーに登録
 		beginLabel.addMouseListener(new SpLabelListener(beginLabel));
-		// パネルにラベルを登録
+		
+		// 各コンポーネントをラベルに追加
+		this.add(distBox);
 		this.add(beginLabel);
 		
 		// スレッドの生成,実行（並列処理開始）
@@ -93,28 +105,6 @@ public class StartPanel extends JPanel implements Runnable {
 		drawWidth = xToDrawCenter(logo.getWidth());
 		drawHeight = (int)(panelHeight * 0.15);
 		g2.drawImage(logo, drawWidth, drawHeight, logo.getWidth(), logo.getHeight(), this);
-		
-		// 各ディストリのロゴの描画
-		int distDrawSize;
-		drawHeight = (int)(panelHeight * 0.3);
-		for(int i = 0; i < Dists.values().length; i++) {
-			distDrawSize = distLogos[i].getWidth();
-			drawWidth = (int)(xToDrawCenter(distDrawSize) + distDrawSize * distDrawWidth[i]);
-			g2.drawImage(distLogos[i], drawWidth, drawHeight, distDrawSize, distDrawSize, this);
-		}
-	}
-	
-	/**
-	 * BufferedImageをリサイズして新たにBufferedImageを作成
-	 * @param image
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public static BufferedImage biResize(BufferedImage image, int width, int height) {
-		BufferedImage bi = new BufferedImage(width, height, image.getType());
-		bi.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, width, height, null);
-		return bi;
 	}
 	
 	/**
