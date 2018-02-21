@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
 public class StartPanel extends JPanel implements Runnable {
@@ -92,10 +93,11 @@ public class StartPanel extends JPanel implements Runnable {
 		beginLabel.setSize(beginLabel.getPreferredSize());
 		beginLabel.setLocation(xToDrawCenter(beginLabel.getWidth()), (int)(panelHeight * 0.6));
 		
-		// マウスリスナーに登録
-		beginLabel.addMouseListener(new SpLabelListener(beginLabel));
+		// リスナーを各コンポーネントに追加
+		beginLabel.addMouseListener(new SpLabelListener(beginLabel, mp));
+		this.addKeyListener(new SpKeyListener(mp));
 		
-		// 各コンポーネントをラベルに追加
+		// 各コンポーネントをパネルに追加
 		this.add(descriLabel);
 		this.add(distBox);
 		this.add(beginLabel);
@@ -109,6 +111,8 @@ public class StartPanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
+		// 入力フォーカスを取得
+		requestFocusInWindow();
 		
 		int drawWidth, drawHeight;
 		// ロゴの描画
