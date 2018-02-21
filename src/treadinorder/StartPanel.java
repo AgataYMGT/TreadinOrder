@@ -1,9 +1,10 @@
-/*
+/**
  * スタート画面パネル
  */
 
 package treadinorder;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -11,9 +12,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class StartPanel extends JPanel {
+import treadinorder.eventlistener.SpLabelListener;
+
+public class StartPanel extends JPanel implements Runnable {
 	private int panelWidth, panelHeight;
 	
 	private static enum Dists {
@@ -25,6 +29,13 @@ public class StartPanel extends JPanel {
 	private BufferedImage logo;
 	private BufferedImage[] distLogos;
 	
+	// フォントとラベル
+	private Font genFont;
+	private JLabel beginLabel;
+	
+	// スレッド
+	private Thread th;
+	
 	// メインパネル
 	private MainPanel mp;
 	
@@ -32,7 +43,7 @@ public class StartPanel extends JPanel {
 		this.mp = mp;
 		this.panelWidth = mp.panelWidth;
 		this.panelHeight = mp.panelHeight;
-
+		
 		// レイアウトマネージャーを停止
 		this.setLayout(null);
 		
@@ -52,10 +63,29 @@ public class StartPanel extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// 全体フォントの設定
+		genFont = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 48);
+				
+		// ラベルの設定
+		beginLabel = new JLabel("ゲームスタート");
+		beginLabel.setFont(genFont);
+		beginLabel.setSize(beginLabel.getPreferredSize());
+		beginLabel.setBounds(xToDrawCenter(beginLabel.getWidth()), (int)(panelHeight * 0.55), beginLabel.getWidth(), beginLabel.getHeight());
+		
+		// マウスリスナーに登録
+		beginLabel.addMouseListener(new SpLabelListener(beginLabel));
+		// パネルにラベルを登録
+		this.add(beginLabel);
+		
+		// スレッドの生成,実行（並列処理開始）
+		th = new Thread(this);
+		th.start();
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
 		int drawWidth, drawHeight;
@@ -66,7 +96,7 @@ public class StartPanel extends JPanel {
 		
 		// 各ディストリのロゴの描画
 		int distDrawSize;
-		drawHeight = (int)(panelHeight * 0.25);
+		drawHeight = (int)(panelHeight * 0.3);
 		for(int i = 0; i < Dists.values().length; i++) {
 			distDrawSize = distLogos[i].getWidth();
 			drawWidth = (int)(xToDrawCenter(distDrawSize) + distDrawSize * distDrawWidth[i]);
@@ -88,11 +118,23 @@ public class StartPanel extends JPanel {
 	}
 	
 	/**
-	 * 画像を中央に表示するためのX座標取得
-	 * @param imageSize
-	 * @return 中央表示のためのX座標
+	 * 中央揃えで描画するためのX座標取得
+	 * @param objWidth　オブジェクトの横幅 
+	 * @return 中央描画のためのX座標
 	 */
-	public int xToDrawCenter(int imageX) {
-		return (panelWidth - imageX) / 2;
+	public int xToDrawCenter(int objWidth) {
+		return (panelWidth - objWidth) / 2;
+	}
+	
+	// スレッド
+	public void run() {
+		while(true) {
+			repaint();
+			try {
+				Thread.sleep(100L);	// 100ms待機
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
