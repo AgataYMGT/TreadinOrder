@@ -18,11 +18,8 @@ public class TreadinOrder extends JFrame {
 		
 		// 全体のパネル制御用パネル(MainPanel)をフレームに追加
 		Container contentPane = getContentPane();
-		MainPanel panel = new MainPanel();
+		MainPanel panel = new MainPanel(this.getSize());
 		contentPane.add(panel);
-		
-		pack();
-		
 	}
 	
 	public static void main(String[] args) {
