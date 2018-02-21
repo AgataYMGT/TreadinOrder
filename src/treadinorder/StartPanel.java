@@ -72,7 +72,7 @@ public class StartPanel extends JPanel implements Runnable {
 		for(int i = 0; i < distLogos.length; i++) {
 			distBox.add(distLogos[i]);
 		}
-		distBox.setSize(distLogos[0].getWidth() * 6, distLogos[0].getHeight());
+		distBox.setSize(distBox.getPreferredSize());
 		distBox.setLocation(xToDrawCenter(distBox.getWidth()), (int)(panelHeight * 0.35));
 		
 		// 全体フォントの設定
