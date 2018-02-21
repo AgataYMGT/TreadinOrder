@@ -7,7 +7,6 @@ package treadinorder;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -15,19 +14,25 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class StartPanel extends JPanel {
+	private int panelWidth, panelHeight;
+	
 	private static enum Dists {
 		debian, ubuntu, linuxmint, redhat, fedora, centos
 	};
 	private final float distDrawWidth[] = {-2.5f, -1.5f, -0.5f, 0.5f, 1.5f, 2.5f};
 	
+	// ロゴ
 	private BufferedImage logo;
 	private BufferedImage[] distLogos;
 	
+	// メインパネル
 	private MainPanel mp;
 	
 	public StartPanel(MainPanel mp) {
 		this.mp = mp;
-		
+		this.panelWidth = mp.panelWidth;
+		this.panelHeight = mp.panelHeight;
+
 		// レイアウトマネージャーを停止
 		this.setLayout(null);
 		
@@ -52,18 +57,16 @@ public class StartPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		// アンチエイリアス処理を有効に
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		int drawWidth, drawHeight;
 		// ロゴの描画
 		drawWidth = xToDrawCenter(logo.getWidth());
-		drawHeight = (int)(this.getHeight() * 0.15);
+		drawHeight = (int)(panelHeight * 0.15);
 		g2.drawImage(logo, drawWidth, drawHeight, logo.getWidth(), logo.getHeight(), this);
 		
 		// 各ディストリのロゴの描画
 		int distDrawSize;
-		drawHeight = (int)(this.getHeight() * 0.25);
+		drawHeight = (int)(panelHeight * 0.25);
 		for(int i = 0; i < Dists.values().length; i++) {
 			distDrawSize = distLogos[i].getWidth();
 			drawWidth = (int)(xToDrawCenter(distDrawSize) + distDrawSize * distDrawWidth[i]);
@@ -90,6 +93,6 @@ public class StartPanel extends JPanel {
 	 * @return 中央表示のためのX座標
 	 */
 	public int xToDrawCenter(int imageX) {
-		return (this.getWidth() - imageX) / 2;
+		return (panelWidth - imageX) / 2;
 	}
 }
