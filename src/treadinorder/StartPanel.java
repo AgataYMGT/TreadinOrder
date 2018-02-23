@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -44,15 +45,16 @@ public class StartPanel extends JPanel {
 		
 		// 各画像の読み込み
 		distLogos = new JLabel[Dists.values().length];
+		BufferedImage image = null;
 		try {
 			// ロゴの読み込み
-			BufferedImage image = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
-			logo = new JLabel(new ImageIcon(image));
+			image = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
+			logo = ImageLabel.getImageJLabel(image);
 			// ディストリの数だけロゴを読み込む
 			short i = 0;
 			for(Dists dist : Dists.values()) {
 				image = ImageIO.read(this.getClass().getResource("assets/" + dist.name() + "400.png"));
-				distLogos[i] = new JLabel(new ImageIcon(image.getScaledInstance(image.getWidth() / 2, image.getHeight() / 2, Image.SCALE_AREA_AVERAGING)));
+				distLogos[i] = ImageLabel.getScaledImageJLabel(image, image.getWidth() / 2, image.getHeight() / 2);
 				i++;
 			}
 		} catch (IOException e) {
