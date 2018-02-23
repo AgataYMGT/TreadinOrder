@@ -5,30 +5,33 @@
 package treadinorder;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
-public class StartPanel extends JPanel {
-	private int panelWidth, panelHeight;
-	
+public class StartPanel extends JPanel {	
 	private static enum Dists {
 		debian, ubuntu, linuxmint, redhat, fedora, centos
 	};
 	
 	// ロゴ
-	private BufferedImage logo;
-	private DistLogo[] distLogos;
+	private JLabel logo;
+	private JLabel[] distLogos;
 	
 	// フォントとラベル
 	private Font genFont;
@@ -36,38 +39,25 @@ public class StartPanel extends JPanel {
 	private JLabel beginLabel;
 	
 	public StartPanel(MainPanel mp) {
-		this.panelWidth = mp.panelWidth;
-		this.panelHeight = mp.panelHeight;
-		
-		// レイアウトマネージャーを停止
-		this.setLayout(null);
+		// BoxLayoutに設定
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// 各画像の読み込み
-		distLogos = new DistLogo[Dists.values().length];
+		distLogos = new JLabel[Dists.values().length];
 		try {
 			// ロゴの読み込み
-			logo = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
+			BufferedImage image = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
+			logo = new JLabel(new ImageIcon(image));
 			// ディストリの数だけロゴを読み込む
 			short i = 0;
 			for(Dists dist : Dists.values()) {
-				// DistLogoインスタンスを作成
-				distLogos[i] = new DistLogo(this.getClass().getResource("assets/" + dist.name() + "400.png"));
-				// 縦横を0.5倍にする
-				distLogos[i].setScale(distLogos[i].getWidth() / 2, distLogos[i].getHeight() / 2);
+				image = ImageIO.read(this.getClass().getResource("assets/" + dist.name() + "400.png"));
+				distLogos[i] = new JLabel(new ImageIcon(image.getScaledInstance(image.getWidth() / 2, image.getHeight() / 2, Image.SCALE_AREA_AVERAGING)));
 				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		// ディストリロゴの描画
-		// ボックスを作ってBoxLayoutの配置にする
-		Box distBox = Box.createHorizontalBox();
-		for(int i = 0; i < distLogos.length; i++) {
-			distBox.add(distLogos[i]);
-		}
-		distBox.setSize(distBox.getPreferredSize());
-		distBox.setLocation(xToDrawCenter(distBox.getWidth()), (int)(panelHeight * 0.35));
 		
 		// 全体フォントの設定
 		genFont = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 48);
@@ -78,44 +68,38 @@ public class StartPanel extends JPanel {
 		descriLabel.setForeground(new Color(0xbd0d0d));
 		descriLabel.setSize(descriLabel.getPreferredSize());
 		descriLabel.setHorizontalAlignment(JLabel.CENTER);
-		descriLabel.setLocation(xToDrawCenter(descriLabel.getWidth()), (int)(panelHeight * 0.22));
 		
 		// ゲームスタートラベルの設定
 		beginLabel = new JLabel("ゲームスタート（Spaceキー）");
 		beginLabel.setFont(genFont);
 		beginLabel.setSize(beginLabel.getPreferredSize());
-		beginLabel.setLocation(xToDrawCenter(beginLabel.getWidth()), (int)(panelHeight * 0.6));
+		beginLabel.setHorizontalAlignment(JLabel.CENTER);
 		
 		// リスナーを各コンポーネントに追加
 		beginLabel.addMouseListener(new SpLabelListener(beginLabel, mp));
 		this.addKeyListener(new SpKeyListener(mp));
 		
-		// 各コンポーネントをパネルに追加
-		this.add(descriLabel);
-		this.add(distBox);
-		this.add(beginLabel);
-	}
-	
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D)g;
-		// 入力フォーカスを取得
-		requestFocusInWindow();
+		// ディストリロゴ用のFlowLayoutパネル作成
+		JPanel distPanel = new JPanel(new FlowLayout());
+		for(int i = 0; i < distLogos.length; i++) {
+			distPanel.add(distLogos[i]);
+		}
+		distPanel.setMaximumSize(distPanel.getPreferredSize());
 		
-		int drawWidth, drawHeight;
-		// ロゴの描画
-		drawWidth = xToDrawCenter(logo.getWidth());
-		drawHeight = (int)(panelHeight * 0.1);
-		g2.drawImage(logo, drawWidth, drawHeight, logo.getWidth(), logo.getHeight(), this);
-	}
-	
-	/**
-	 * 中央揃えで描画するためのX座標取得
-	 * @param objWidth　オブジェクトの横幅 
-	 * @return 中央描画のためのX座標
-	 */
-	public int xToDrawCenter(int objWidth) {
-		return (panelWidth - objWidth) / 2;
+		// 各コンポーネントを中心揃え
+		logo.setAlignmentX(CENTER_ALIGNMENT);
+		descriLabel.setAlignmentX(CENTER_ALIGNMENT);
+		beginLabel.setAlignmentX(CENTER_ALIGNMENT);
+		
+		// 各コンポーネントをパネルに追加
+		this.add(Box.createGlue());
+		this.add(logo);
+		this.add(Box.createRigidArea(new Dimension(0, 20)));
+		this.add(descriLabel);
+		this.add(Box.createRigidArea(new Dimension(0, 20)));
+		this.add(distPanel);
+		this.add(Box.createGlue());
+		this.add(beginLabel);
+		this.add(Box.createGlue());
 	}
 }

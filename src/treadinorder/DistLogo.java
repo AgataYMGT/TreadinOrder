@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
+import javax.swing.JPanel;
 
-public class DistLogo extends JComponent {
+public class DistLogo extends JPanel {
 	private BufferedImage image;
 	
 	public DistLogo(URL imgPath) {
@@ -26,6 +26,7 @@ public class DistLogo extends JComponent {
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		// 画像の描画
 		g.drawImage(image, 0, 0, null);
 	}
@@ -37,9 +38,11 @@ public class DistLogo extends JComponent {
 	 * @return リサイズされた画像
 	 */
 	public void setScale(int width, int height) {
+		BufferedImage origImage = image;
+		image = new BufferedImage(width, height, origImage.getType());
 		// コンポーネントのサイズを画像に合わせる
 		this.setSize(width, height);
 		// 画像のスケールを変えて描画し直す
-		image.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, width, height, null);
+		image.getGraphics().drawImage(origImage.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, width, height, null);
 	}
 }
