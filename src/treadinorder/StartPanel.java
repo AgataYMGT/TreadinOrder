@@ -21,10 +21,6 @@ import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
 public class StartPanel extends JPanel {	
-	private static enum Dists {
-		debian, ubuntu, linuxmint, redhat, fedora, centos
-	};
-	
 	// ロゴ
 	private JLabel logo;
 	private JLabel[] distLogos;
