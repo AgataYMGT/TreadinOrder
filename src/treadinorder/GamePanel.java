@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import treadinorder.TreadinOrder.Tiles;
+import treadinorder.eventlistener.GpKeyListener;
 
 public class GamePanel extends JPanel {
 	// クラス変数
@@ -68,8 +69,10 @@ public class GamePanel extends JPanel {
 					tilePanel.add(tileLabel);
 				}
 			}
-			
+			// 迷路パネルをこのパネルに追加
 			this.add(tilePanel);
+			// キーリスナーを追加
+			this.addKeyListener(new GpKeyListener(this));
 		}
 	}
 }
