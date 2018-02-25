@@ -46,7 +46,7 @@ public class StartPanel extends JPanel {
 			// タイルの数だけその画像を読み込む
 			short i = 0;
 			for(Tiles tile : Tiles.values()) {
-				image = ImageIO.read(this.getClass().getResource("assets/" + tile.name() + "400.png"));
+				image = ImageIO.read(this.getClass().getResource("assets/" + tile.name() + ".png"));
 				tileImage[i] = ImageLabel.getScaledImageJLabel(image, image.getWidth() / 2, image.getHeight() / 2);
 				i++;
 			}
