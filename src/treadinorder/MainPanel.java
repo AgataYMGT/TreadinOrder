@@ -49,7 +49,7 @@ public class MainPanel extends JPanel implements Runnable {
 				switch(state) {
 				case 1:	// 1ならGamePanel
 					this.removeAll();
-					gPanel = new GamePanel();
+					gPanel = new GamePanel(this);
 					this.add(gPanel);
 					break;
 				}
