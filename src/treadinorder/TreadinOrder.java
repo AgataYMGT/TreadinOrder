@@ -6,6 +6,10 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JFrame;
 
 public class TreadinOrder extends JFrame {
+	public static enum Tiles {
+		debian, ubuntu, linuxmint, redhat, fedora, centos
+	};
+	
 	public TreadinOrder() {
 		// タイトルを設定
 		setTitle("TreadinOrder");

@@ -17,39 +17,37 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import treadinorder.TreadinOrder.Tiles;
 import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
 public class StartPanel extends JPanel {	
-	private static enum Dists {
-		debian, ubuntu, linuxmint, redhat, fedora, centos
-	};
-	
-	// ロゴ
-	private JLabel logo;
-	private JLabel[] distLogos;
+	// インスタンス変数
+	// 画像
+	private JLabel logo;				// ロゴ画像
+	private JLabel[] tileImage;		// タイル画像
 	
 	// フォントとラベル
-	private Font genFont;
-	private JLabel descriLabel;
-	private JLabel beginLabel;
+	private Font genFont;				// 全般のフォント
+	private JLabel descriLabel;		// 説明ラベル
+	private JLabel beginLabel;		// ゲームスタートラベル
 	
 	public StartPanel(MainPanel mp) {
 		// BoxLayoutに設定
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// 各画像の読み込み
-		distLogos = new JLabel[Dists.values().length];
+		tileImage = new JLabel[Tiles.values().length];
 		BufferedImage image = null;
 		try {
-			// ロゴの読み込み
+			// 画像の読み込み
 			image = ImageIO.read(this.getClass().getResource("assets/TreadinOrder.png"));
 			logo = ImageLabel.getImageJLabel(image);
-			// ディストリの数だけロゴを読み込む
+			// タイルの数だけその画像を読み込む
 			short i = 0;
-			for(Dists dist : Dists.values()) {
-				image = ImageIO.read(this.getClass().getResource("assets/" + dist.name() + "400.png"));
-				distLogos[i] = ImageLabel.getScaledImageJLabel(image, image.getWidth() / 2, image.getHeight() / 2);
+			for(Tiles tile : Tiles.values()) {
+				image = ImageIO.read(this.getClass().getResource("assets/" + tile.name() + ".png"));
+				tileImage[i] = ImageLabel.getScaledImageJLabel(image, image.getWidth() / 2, image.getHeight() / 2);
 				i++;
 			}
 		} catch (IOException e) {
@@ -76,12 +74,12 @@ public class StartPanel extends JPanel {
 		beginLabel.addMouseListener(new SpLabelListener(beginLabel, mp));
 		this.addKeyListener(new SpKeyListener(mp));
 		
-		// ディストリロゴ用のFlowLayoutパネル作成
-		JPanel distPanel = new JPanel(new FlowLayout());
-		for(int i = 0; i < distLogos.length; i++) {
-			distPanel.add(distLogos[i]);
+		// タイル画像用のFlowLayoutパネル作成
+		JPanel tilePanel = new JPanel(new FlowLayout());
+		for(int i = 0; i < tileImage.length; i++) {
+			tilePanel.add(tileImage[i]);
 		}
-		distPanel.setMaximumSize(distPanel.getPreferredSize());
+		tilePanel.setMaximumSize(tilePanel.getPreferredSize());
 		
 		// 各コンポーネントを中心揃え
 		logo.setAlignmentX(CENTER_ALIGNMENT);
@@ -94,7 +92,7 @@ public class StartPanel extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, 20)));
 		this.add(descriLabel);
 		this.add(Box.createRigidArea(new Dimension(0, 20)));
-		this.add(distPanel);
+		this.add(tilePanel);
 		this.add(Box.createGlue());
 		this.add(beginLabel);
 		this.add(Box.createGlue());
