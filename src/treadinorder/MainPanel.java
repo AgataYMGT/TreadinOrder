@@ -51,6 +51,7 @@ public class MainPanel extends JPanel implements Runnable {
 					this.removeAll();
 					gPanel = new GamePanel(this);
 					this.add(gPanel);
+					revalidate();
 					break;
 				}
 			}
