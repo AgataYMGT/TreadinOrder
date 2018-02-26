@@ -103,7 +103,11 @@ public class GamePanel extends JPanel implements Runnable {
 			playerLabel = null;
 			try {
 				BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
-				playerLabel = ImageLabel.getScaledImageJLabel(playerImage, playerImage.getWidth() * tileDrawsize / playerImage.getHeight(), tileDrawsize);
+				// 画像の縦横比率
+				double drawRatio = 0.8;
+				int playerWidth = (int)(playerImage.getWidth() * tileDrawsize * drawRatio / playerImage.getHeight());
+				int playerHeight = (int)(tileDrawsize * drawRatio);
+				playerLabel = ImageLabel.getScaledImageJLabel(playerImage, playerWidth, playerHeight);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
