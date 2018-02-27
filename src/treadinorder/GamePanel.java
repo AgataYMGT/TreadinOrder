@@ -41,14 +41,19 @@ public class GamePanel extends JPanel implements Runnable {
 	// インスタンス変数
 	Random random;	// ランダムクラス
 	
-	JPanel tilePanel;				// タイルパネル
+	// コンポーネント
+	private JPanel tilePanel;	// タイルパネル
+	private JLabel playerLabel;	// プレイヤーラベル
 	
 	int[][] map;						// 迷路マップ
 	private final int mapSize;	// マップの全体サイズ
 	
-	private JLabel playerLabel;	// プレイヤーラベル
-	
 	private int playerSpeed;		// プレイヤースピード
+	
+	// 壁
+	private int wallWidth, wallHeight;		// 壁の大きさ
+	private int leftWallX, leftWallY;		// 左の壁の座標
+	private int rightWallX, rightWallY;	// 右の壁の座標
 	
 	// 十字キー押下フラグ
 	private boolean[] pressedCrossKey = {false, false, false, false};
@@ -128,6 +133,14 @@ public class GamePanel extends JPanel implements Runnable {
 			// コンポーネント位置を設定
 			tilePanel.setLocation(horizonalCentering(tilePanel.getWidth()), verticalCentering(tilePanel.getHeight()));
 			
+			// 壁の大きさを設定
+			wallWidth = tileDrawsize;
+			wallHeight = getHeight();
+			leftWallX = tilePanel.getX() - wallWidth;
+			leftWallY = 0;
+			rightWallX = tilePanel.getX() + tilePanel.getWidth();
+			rightWallY = 0;
+			
 			// リスナーを追加
 			this.addKeyListener(new GPKeyListener(this));
 			// パネルが可視/不可視になると呼ばれるリスナー
@@ -189,11 +202,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		int wallWidth = 100;
-		int tilePanelX = tilePanel.getLocation().x;
 		// 左の壁を描画
-		g.fillRect(tilePanelX - wallWidth, 0, wallWidth, getHeight());
-		g.fillRect(tilePanelX + tilePanel.getWidth(), 0, wallWidth, getHeight());
+		g.fillRect(leftWallX, leftWallY, wallWidth, wallHeight);
+		// 右の壁を描画
+		g.fillRect(rightWallX, rightWallY, wallWidth, wallHeight);
 	}
 	
 	public void setPressedKey(int key) {
