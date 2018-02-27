@@ -3,6 +3,7 @@ package treadinorder;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import treadinorder.eventlistener.GPKeyListener;
 
 public class GamePanel extends JPanel implements Runnable {
 	// クラス変数
-	public static final int[] DIFFICULTY = {7};	// 難易度
+	public static final int[] DIFFICULTY = {5, 7, 9, 11};	// 難易度
 	// プレイヤー画像の相対パス
 	public static final String PLAYERIMAGE_PATH = "assets/player.png";
 	
@@ -41,16 +42,19 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int[][] VECTOR = {UP, LEFT, DOWN, RIGHT};
 	
 	// インスタンス変数
-	Random random;	// ランダムクラス
+	private Random random = new Random();	// ランダムクラス
 	
 	// コンポーネント
-	private JPanel tilePanel;	// タイルパネル
-	private JLabel playerLabel;	// プレイヤーラベル
-	private Box onesetBox;		//　踏む順番のワンセットボックス
-	private Box orderNumBox;	// ワンセットの順番を表示するボックス
+	private TilePanel tilePanel;	// タイルパネル
+	private JLabel playerLabel;		// プレイヤーラベル
+	private Box onesetBox;			//　指定される順番のワンセットボックス
+	private Box orderNumBox;			// ワンセットの順番を表示するボックス
 	
-	int[][] map;						// 迷路マップ
-	private final int mapSize;	// マップの全体サイズ
+	private Image[] tileImages;		// タイル画像の配列
+	
+	private int oneset;			// 指定される順番のワンセット
+	private int difficulty;		// 難易度
+	private int tileDrawsize;	// タイルの描画サイズ
 	
 	private int playerSpeed;		// プレイヤースピード
 	
@@ -67,134 +71,105 @@ public class GamePanel extends JPanel implements Runnable {
 	public GamePanel(MainPanel mPanel) {
 		// パネルサイズを設定
 		this.setSize(mPanel.getSize());
-		
-		// インスタンス変数の初期化
-		this.random = new Random();
-		mapSize = (int)(getHeight() * 0.75);
-		
+		// レイアウトマネージャーを停止
 		this.setLayout(null);
 		
-		for(int difficulty : DIFFICULTY) {
-			// 指定する順番のワンセットをランダムに取得
-			int oneset = random.nextInt(Tiles.values().length - 2) + 3;
+		// 難易度を設定
+		difficulty = DIFFICULTY[1];
+		
+		// タイルパネルを生成
+		tilePanel = new TilePanel(this, difficulty);
+		
+		// タイル画像を取得する
+		tileImages = tilePanel.getOnesetTileImages();
+		
+		// ワンセットを取得する
+		oneset = tilePanel.getOneset();
+		// タイルの描画サイズを取得する
+		tileDrawsize = tilePanel.getTileDrawsize();
+		
+		// プレイヤーラベルを作成
+		playerLabel = null;
+		try {
+			BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
+			// 画像の縦横比率
+			double drawRatio = 0.8;
+			int playerWidth = (int)(playerImage.getWidth() * tileDrawsize * drawRatio / playerImage.getHeight());
+			int playerHeight = (int)(tileDrawsize * drawRatio);
+			playerLabel = ImageLabel.getScaledImageJLabel(playerImage, playerWidth, playerHeight);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 			
-			// ワンセットのタイルをランダムに決定、画像を取得する
-			List<Tiles> tiles = Arrays.asList(Tiles.values());
-			Collections.shuffle(tiles);
+		// プレイヤーのスピードを設定
+		playerSpeed = 2;
 			
-			BufferedImage[] onesetTiles = new BufferedImage[oneset];
-			for(int i = 0; i < oneset; i++) {
-				URL imgpath = getClass().getResource("assets/" + tiles.get(i).name() + ".png");
-				try {
-					onesetTiles[i] = ImageIO.read(imgpath);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			// マップを取得
-			map = new Maze(difficulty, difficulty, oneset).getMap();
-			
-			// タイルを描画する大きさを設定
-			int tileDrawsize = mapSize / difficulty;
-			
-			// パネルを作成してタイルを敷き詰める
-			tilePanel = new JPanel(new GridLayout(difficulty, difficulty));
-			for(int i = 0; i < difficulty; i++) {
-				for(int j = 0; j < difficulty; j++) {
-					// その座標がダミーならワンセットからランダムに選び置き換える
-					BufferedImage tileImage = onesetTiles[(map[i][j] == Maze.DUMMY) ? random.nextInt(oneset) : map[i][j]];
-					JLabel tileLabel = null;
-					try {
-						tileLabel = ImageLabel.getScaledImageJLabel(tileImage, tileDrawsize, tileDrawsize);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					tilePanel.add(tileLabel);
-				}
-			}
-			
-			// プレイヤーラベルを作成
-			playerLabel = null;
+		// ワンセットのボックスと順番表示ボックスを作成
+		onesetBox = Box.createVerticalBox();
+		orderNumBox = Box.createVerticalBox();
+		for(int i = 0; i < oneset; i++) {
 			try {
-				BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
-				// 画像の縦横比率
-				double drawRatio = 0.8;
-				int playerWidth = (int)(playerImage.getWidth() * tileDrawsize * drawRatio / playerImage.getHeight());
-				int playerHeight = (int)(tileDrawsize * drawRatio);
-				playerLabel = ImageLabel.getScaledImageJLabel(playerImage, playerWidth, playerHeight);
+				JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(tileImages[i], tileDrawsize, tileDrawsize);
+				onesetBox.add(onesetTileLabel, 0);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			// プレイヤーのスピードを設定
-			playerSpeed = 2;
-			
-			// ワンセットのボックスと順番表示ボックスを作成
-			onesetBox = Box.createVerticalBox();
-			orderNumBox = Box.createVerticalBox();
-			for(int i = 0; i < oneset; i++) {
-				try {
-					JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(onesetTiles[i], tileDrawsize, tileDrawsize);
-					onesetBox.add(onesetTileLabel, 0);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
-				orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
-				orderNumBox.add(orderNumLabel, 0);
-			}
-			for(int i = 0; i < 2; i++) {
-				try {
-					JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(onesetTiles[i], tileDrawsize, tileDrawsize);
-					onesetBox.add(onesetTileLabel, 0);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
-				orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
-				orderNumBox.add(orderNumLabel, 0);
-			}
-			
-			// コンポーネントサイズを設定
-			playerLabel.setSize(playerLabel.getPreferredSize());
-			tilePanel.setSize(tilePanel.getPreferredSize());
-			onesetBox.setSize(onesetBox.getPreferredSize());
-			orderNumBox.setSize(orderNumBox.getPreferredSize());
-			
-			// コンポーネント位置を設定
-			tilePanel.setLocation(horizonalCentering(this.getWidth(), tilePanel.getWidth()), verticalCentering(this.getHeight(), tilePanel.getHeight()));
-			playerLabel.setLocation(horizonalCentering(this.getWidth(), playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
-			
-			// 壁の大きさを設定
-			wallWidth = tileDrawsize;
-			wallHeight = getHeight();
-			leftWallX = tilePanel.getX() - wallWidth;
-			leftWallY = 0;
-			rightWallX = tilePanel.getX() + tilePanel.getWidth();
-			rightWallY = 0;
-			
-			// ワンセットボックスの位置を設定
-			int onesetBoxX = horizonalCentering(leftWallX, onesetBox.getWidth()) + rightWallX + wallWidth;
-			int onesetBoxY = verticalCentering(this.getHeight(), onesetBox.getHeight());
-			onesetBox.setLocation(onesetBoxX, onesetBoxY);
-			// 順番表示ボックスの設定
-			orderNumBox.setLocation(onesetBoxX - orderNumBox.getWidth() - 10, onesetBoxY);
-			
-			// リスナーを追加
-			this.addKeyListener(new GPKeyListener(this));
-			// パネルが可視/不可視になると呼ばれるリスナー
-			this.addAncestorListener(new GPAncestorListener(this));
-			
-			// コンポーネントをこのパネルに追加
-			this.add(playerLabel);
-			this.add(tilePanel);
-			this.add(onesetBox);
-			this.add(orderNumBox);
-			
-			th = new Thread(this);
-			th.start();
+			JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
+			orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
+			orderNumBox.add(orderNumLabel, 0);
 		}
+		for(int i = 0; i < 2; i++) {
+			try {
+				JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(tileImages[i], tileDrawsize, tileDrawsize);
+				onesetBox.add(onesetTileLabel, 0);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
+			orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
+			orderNumBox.add(orderNumLabel, 0);
+		}
+			
+		// コンポーネントサイズを設定
+		playerLabel.setSize(playerLabel.getPreferredSize());
+		tilePanel.setSize(tilePanel.getPreferredSize());
+		onesetBox.setSize(onesetBox.getPreferredSize());
+		orderNumBox.setSize(orderNumBox.getPreferredSize());
+			
+		// コンポーネント位置を設定
+		System.out.println(tileDrawsize);
+		System.out.println(tilePanel.getWidth());
+		tilePanel.setLocation(horizonalCentering(this.getWidth(), tilePanel.getWidth()), verticalCentering(this.getHeight(), tilePanel.getHeight()));
+		playerLabel.setLocation(horizonalCentering(this.getWidth(), playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
+			
+		// 壁の大きさを設定
+		wallWidth = tileDrawsize;
+		wallHeight = getHeight();
+		leftWallX = tilePanel.getX() - wallWidth;
+		leftWallY = 0;
+		rightWallX = tilePanel.getX() + tilePanel.getWidth();
+		rightWallY = 0;
+			
+		// ワンセットボックスの位置を設定
+		int onesetBoxX = horizonalCentering(leftWallX, onesetBox.getWidth()) + rightWallX + wallWidth;
+		int onesetBoxY = verticalCentering(this.getHeight(), onesetBox.getHeight());
+		onesetBox.setLocation(onesetBoxX, onesetBoxY);
+		// 順番表示ボックスの設定
+		orderNumBox.setLocation(onesetBoxX - orderNumBox.getWidth() - 10, onesetBoxY);
+			
+		// リスナーを追加
+		this.addKeyListener(new GPKeyListener(this));
+		// パネルが可視/不可視になると呼ばれるリスナー
+		this.addAncestorListener(new GPAncestorListener(this));
+			
+		// コンポーネントをこのパネルに追加
+		this.add(playerLabel);
+		this.add(tilePanel);
+		this.add(onesetBox);
+		this.add(orderNumBox);
+			
+		th = new Thread(this);
+		th.start();
 	}
 	
 	/**
@@ -258,6 +233,8 @@ public class GamePanel extends JPanel implements Runnable {
 		g.fillRect(leftWallX, leftWallY, wallWidth, wallHeight);
 		// 右の壁を描画
 		g.fillRect(rightWallX, rightWallY, wallWidth, wallHeight);
+		
+		tilePanel.repaint();
 	}
 	
 	public void setPressedKey(int key) {
@@ -266,5 +243,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setReleasedKey(int key) {
 		pressedCrossKey[key] = false;
+	}
+	
+	public JPanel getTilePanel() {
+		return tilePanel;
 	}
 }
