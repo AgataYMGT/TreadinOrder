@@ -132,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// コンポーネント位置を設定
 			tilePanel.setLocation(horizonalCentering(tilePanel.getWidth()), verticalCentering(tilePanel.getHeight()));
+			playerLabel.setLocation(horizonalCentering(playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
 			
 			// 壁の大きさを設定
 			wallWidth = tileDrawsize;
@@ -170,8 +171,8 @@ public class GamePanel extends JPanel implements Runnable {
 	 * @param x 中央揃えにしたいオブジェクトの横幅
 	 * @return 中央揃えのためのX座標
 	 */
-	public int horizonalCentering(int x) {
-		return (this.getWidth() - x) / 2;
+	public int horizonalCentering(int width) {
+		return (this.getWidth() - width) / 2;
 	}
 	
 	/**
