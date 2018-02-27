@@ -186,10 +186,20 @@ public class GamePanel extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
+			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
 					drawPlayer(playerSpeed, VECTOR[i][0], VECTOR[i][1]);
 				}
+			}
+			
+			// プレイヤーが壁の外に出ないようにする
+			int playerX = playerLabel.getX();
+			int playerWidth = playerLabel.getWidth();
+			if(playerX < leftWallX + wallWidth) {
+				playerLabel.setLocation(leftWallX + wallWidth, playerLabel.getY());
+			} else if(playerX + playerWidth > rightWallX) {
+				playerLabel.setLocation(rightWallX - playerWidth, playerLabel.getY());
 			}
 			
 			try {
