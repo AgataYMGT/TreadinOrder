@@ -10,8 +10,7 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 
 public class MainPanel extends JPanel implements Runnable {
-	public int panelWidth, panelHeight;
-	
+	// インスタンス変数	
 	public static final String GEN_FONTNAME = "IPAフォント";
 	
 	// ゲームステート(状態)
@@ -27,8 +26,7 @@ public class MainPanel extends JPanel implements Runnable {
 	Thread th;
 	
 	public MainPanel(Dimension panelSize) {
-		panelWidth = panelSize.width;
-		panelHeight = panelSize.height;
+		this.setSize(panelSize);
 		
 		// グリッド(行1, 縦1)を作成
 		this.setLayout(new GridLayout(1, 1));
@@ -51,7 +49,7 @@ public class MainPanel extends JPanel implements Runnable {
 					this.removeAll();
 					gPanel = new GamePanel(this);
 					this.add(gPanel);
-					revalidate();
+					repaint();
 					break;
 				}
 			}

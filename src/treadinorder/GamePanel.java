@@ -1,5 +1,6 @@
 package treadinorder;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -40,6 +41,8 @@ public class GamePanel extends JPanel implements Runnable {
 	// インスタンス変数
 	Random random;	// ランダムクラス
 	
+	JPanel tilePanel;				// タイルパネル
+	
 	int[][] map;						// 迷路マップ
 	private final int mapSize;	// マップの全体サイズ
 	
@@ -53,11 +56,14 @@ public class GamePanel extends JPanel implements Runnable {
 	private Thread th;		// スレッド
 		
 	public GamePanel(MainPanel mPanel) {
+		// パネルサイズを設定
+		this.setSize(mPanel.getSize());
+		
+		// インスタンス変数の初期化
 		this.random = new Random();
-		mapSize = (int)(mPanel.panelHeight * 0.8);
+		mapSize = (int)(getHeight() * 0.8);
 		
 		this.setLayout(null);
-		this.setPreferredSize(mPanel.getSize());
 		
 		for(int difficulty : DIFFICULTY) {
 			// 指定する順番のワンセットをランダムに取得
@@ -84,7 +90,7 @@ public class GamePanel extends JPanel implements Runnable {
 			int tileDrawsize = mapSize / difficulty;
 			
 			// パネルを作成してタイルを敷き詰める
-			JPanel tilePanel = new JPanel(new GridLayout(difficulty, difficulty));
+			tilePanel = new JPanel(new GridLayout(difficulty, difficulty));
 			for(int i = 0; i < difficulty; i++) {
 				for(int j = 0; j < difficulty; j++) {
 					// その座標がダミーならワンセットからランダムに選び置き換える
@@ -119,6 +125,9 @@ public class GamePanel extends JPanel implements Runnable {
 			playerLabel.setSize(playerLabel.getPreferredSize());
 			tilePanel.setSize(tilePanel.getPreferredSize());
 			
+			// コンポーネント位置を設定
+			tilePanel.setLocation(horizonalCentering(tilePanel.getWidth()), verticalCentering(tilePanel.getHeight()));
+			
 			// リスナーを追加
 			this.addKeyListener(new GPKeyListener(this));
 			// パネルが可視/不可視になると呼ばれるリスナー
@@ -143,6 +152,24 @@ public class GamePanel extends JPanel implements Runnable {
 		playerLabel.setLocation(point.x + vectorX + (int)(Math.signum(vectorX) * speed), point.y + vectorY + (int)(Math.signum(vectorY) * speed));
 	}
 	
+	/**
+	 * 中央揃えのためのX座標を返す
+	 * @param x 中央揃えにしたいオブジェクトの横幅
+	 * @return 中央揃えのためのX座標
+	 */
+	public int horizonalCentering(int x) {
+		return (this.getWidth() - x) / 2;
+	}
+	
+	/**
+	 * 縦揃えのためのY座標を返す
+	 * @param y 縦揃えにしたいオブジェクトの縦幅
+	 * @return 縦揃えのためのY座標
+	 */
+	public int verticalCentering(int y) {
+		return (this.getHeight() - y) / 2;
+	}
+	
 	@Override
 	public void run() {
 		while(true) {
@@ -158,6 +185,15 @@ public class GamePanel extends JPanel implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		int wallWidth = 100;
+		int tilePanelX = tilePanel.getLocation().x;
+		// 左の壁を描画
+		g.fillRect(tilePanelX - wallWidth, 0, wallWidth, getHeight());
+		g.fillRect(tilePanelX + tilePanel.getWidth(), 0, wallWidth, getHeight());
 	}
 	
 	public void setPressedKey(int key) {
