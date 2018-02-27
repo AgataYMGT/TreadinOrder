@@ -1,5 +1,6 @@
 package treadinorder;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -44,6 +46,8 @@ public class GamePanel extends JPanel implements Runnable {
 	// コンポーネント
 	private JPanel tilePanel;	// タイルパネル
 	private JLabel playerLabel;	// プレイヤーラベル
+	private Box onesetBox;		//　踏む順番のワンセットボックス
+	private Box orderNumBox;	// ワンセットの順番を表示するボックス
 	
 	int[][] map;						// 迷路マップ
 	private final int mapSize;	// マップの全体サイズ
@@ -66,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// インスタンス変数の初期化
 		this.random = new Random();
-		mapSize = (int)(getHeight() * 0.8);
+		mapSize = (int)(getHeight() * 0.75);
 		
 		this.setLayout(null);
 		
@@ -124,15 +128,43 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			// プレイヤーのスピードを設定
-			playerSpeed = 1;
+			playerSpeed = 2;
+			
+			// ワンセットのボックスと順番表示ボックスを作成
+			onesetBox = Box.createVerticalBox();
+			orderNumBox = Box.createVerticalBox();
+			for(int i = 0; i < oneset; i++) {
+				try {
+					JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(onesetTiles[i], tileDrawsize, tileDrawsize);
+					onesetBox.add(onesetTileLabel, 0);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
+				orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
+				orderNumBox.add(orderNumLabel, 0);
+			}
+			for(int i = 0; i < 2; i++) {
+				try {
+					JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(onesetTiles[i], tileDrawsize, tileDrawsize);
+					onesetBox.add(onesetTileLabel, 0);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
+				orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
+				orderNumBox.add(orderNumLabel, 0);
+			}
 			
 			// コンポーネントサイズを設定
 			playerLabel.setSize(playerLabel.getPreferredSize());
 			tilePanel.setSize(tilePanel.getPreferredSize());
+			onesetBox.setSize(onesetBox.getPreferredSize());
+			orderNumBox.setSize(orderNumBox.getPreferredSize());
 			
 			// コンポーネント位置を設定
-			tilePanel.setLocation(horizonalCentering(tilePanel.getWidth()), verticalCentering(tilePanel.getHeight()));
-			playerLabel.setLocation(horizonalCentering(playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
+			tilePanel.setLocation(horizonalCentering(this.getWidth(), tilePanel.getWidth()), verticalCentering(this.getHeight(), tilePanel.getHeight()));
+			playerLabel.setLocation(horizonalCentering(this.getWidth(), playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
 			
 			// 壁の大きさを設定
 			wallWidth = tileDrawsize;
@@ -142,6 +174,13 @@ public class GamePanel extends JPanel implements Runnable {
 			rightWallX = tilePanel.getX() + tilePanel.getWidth();
 			rightWallY = 0;
 			
+			// ワンセットボックスの位置を設定
+			int onesetBoxX = horizonalCentering(leftWallX, onesetBox.getWidth()) + rightWallX + wallWidth;
+			int onesetBoxY = verticalCentering(this.getHeight(), onesetBox.getHeight());
+			onesetBox.setLocation(onesetBoxX, onesetBoxY);
+			// 順番表示ボックスの設定
+			orderNumBox.setLocation(onesetBoxX - orderNumBox.getWidth() - 10, onesetBoxY);
+			
 			// リスナーを追加
 			this.addKeyListener(new GPKeyListener(this));
 			// パネルが可視/不可視になると呼ばれるリスナー
@@ -150,6 +189,8 @@ public class GamePanel extends JPanel implements Runnable {
 			// コンポーネントをこのパネルに追加
 			this.add(playerLabel);
 			this.add(tilePanel);
+			this.add(onesetBox);
+			this.add(orderNumBox);
 			
 			th = new Thread(this);
 			th.start();
@@ -167,21 +208,21 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	/**
-	 * 中央揃えのためのX座標を返す
+	 * 親に対して中央揃えにするためのX座標を返す
 	 * @param x 中央揃えにしたいオブジェクトの横幅
 	 * @return 中央揃えのためのX座標
 	 */
-	public int horizonalCentering(int width) {
-		return (this.getWidth() - width) / 2;
+	public int horizonalCentering(int parent, int width) {
+		return (parent - width) / 2;
 	}
 	
 	/**
-	 * 縦揃えのためのY座標を返す
-	 * @param y 縦揃えにしたいオブジェクトの縦幅
-	 * @return 縦揃えのためのY座標
+	 * 親に対して縦方向の中央揃えにするためのY座標を返す
+	 * @param y 縦中央揃えにしたいオブジェクトの縦幅
+	 * @return 縦中央揃えのためのY座標
 	 */
-	public int verticalCentering(int y) {
-		return (this.getHeight() - y) / 2;
+	public int verticalCentering(int parent, int height) {
+		return (parent - height) / 2;
 	}
 	
 	@Override
