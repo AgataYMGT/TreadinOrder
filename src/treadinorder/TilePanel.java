@@ -83,7 +83,7 @@ public class TilePanel extends JPanel {
 		// タイルを敷き詰める
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[i].length; j++) {
-				g2.drawImage(mapTiles[i][j], tileDrawsize * i, tileDrawsize * j, this);
+				g2.drawImage(mapTiles[i][j], tileDrawsize * j, tileDrawsize * i, this);
 			}
 		}
 	}

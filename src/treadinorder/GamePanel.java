@@ -2,15 +2,10 @@ package treadinorder;
 
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -18,7 +13,6 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import treadinorder.TreadinOrder.Tiles;
 import treadinorder.eventlistener.GPAncestorListener;
 import treadinorder.eventlistener.GPKeyListener;
 
@@ -137,8 +131,6 @@ public class GamePanel extends JPanel implements Runnable {
 		orderNumBox.setSize(orderNumBox.getPreferredSize());
 			
 		// コンポーネント位置を設定
-		System.out.println(tileDrawsize);
-		System.out.println(tilePanel.getWidth());
 		tilePanel.setLocation(horizonalCentering(this.getWidth(), tilePanel.getWidth()), verticalCentering(this.getHeight(), tilePanel.getHeight()));
 		playerLabel.setLocation(horizonalCentering(this.getWidth(), playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
 			
