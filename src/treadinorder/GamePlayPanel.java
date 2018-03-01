@@ -1,10 +1,12 @@
 package treadinorder;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +28,8 @@ public class GamePlayPanel extends JPanel {
 	// インスタンス変数
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
+	
+	private int[][] trodTiles;	// 既に踏んだタイル
 	
 	private int topBottomSpace;	// 上下余白
 	
@@ -50,6 +54,8 @@ public class GamePlayPanel extends JPanel {
 		map = new Maze(difficulty, difficulty, oneset).getMap();
 		// マップサイズを設定
 		mapSize = (int)(parentPanel.getHeight() * 0.8);
+		
+		trodTiles = new int[map.length][map.length];
 		
 		// 上下余白のサイズを設定
 		topBottomSpace = (parentPanel.getHeight() - mapSize) / 2;
@@ -108,15 +114,41 @@ public class GamePlayPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
-		// タイルを敷き詰める
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[i].length; j++) {
+				// タイルを描画する
 				g2.drawImage(mapTiles[i][j], tileDrawsize * j, topBottomSpace + tileDrawsize * i, this);
+				
+				// タイルとプレイヤーが重なっているか確かめる
+				if( isTrod(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize) ) {
+					trodTiles[i][j] = 1;
+				}
+				
+				// 既に踏まれたタイルなら上から黒く塗る
+				if(trodTiles[i][j] == 1) {
+					g2.setColor(new Color(0, 0, 0, 200));
+					g2.fillRect(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize);
+				}
 			}
 		}
 		
 		// プレイヤーを描画する
 		g2.drawImage(playerImage, playerX, playerY, this);
+	}
+	
+	/**
+	 * タイルとプレイヤーの重なりを判定する
+	 * @param tileX			タイルのX座標
+	 * @param tileY			タイルのY座標
+	 * @param tileWidth	タイルの横幅
+	 * @param tileHeight	タイルの縦幅
+	 * @return	重なっているならばtrue, そうでなければfalseを返す
+	 */
+	private boolean isTrod(int tileX, int tileY, int tileWidth, int tileHeight) {
+		Rectangle playerRect = new Rectangle(playerX, playerY, playerWidth, playerHeight);
+		Rectangle tileRect = new Rectangle(tileX, tileY, tileWidth, tileHeight);
+		
+		return playerRect.intersects(tileRect);
 	}
 	
 	/**
