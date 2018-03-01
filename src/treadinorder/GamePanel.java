@@ -22,8 +22,6 @@ import static treadinorder.TOUtils.verticalCentering;
 public class GamePanel extends JPanel implements Runnable {
 	// クラス変数
 	public static final int[] DIFFICULTY = {5, 7, 9, 11};	// 難易度
-	// プレイヤー画像の相対パス
-	public static final String PLAYERIMAGE_PATH = "assets/player.png";
 	
 	// キー方向
 	public static final int K_UP = 0;
@@ -42,10 +40,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private Random random = new Random();	// ランダムクラス
 	
 	// コンポーネント
-	private TilePanel tilePanel;	// タイルパネル
-	private JLabel playerLabel;		// プレイヤーラベル
-	private Box onesetBox;			//　指定される順番のワンセットボックス
-	private Box orderNumBox;			// ワンセットの順番を表示するボックス
+	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
+	private Box onesetBox;				//　指定される順番のワンセットボックス
+	private Box orderNumBox;				// ワンセットの順番を表示するボックス
 	
 	private Image[] tileImages;		// タイル画像の配列
 	
@@ -53,15 +50,13 @@ public class GamePanel extends JPanel implements Runnable {
 	private int difficulty;		// 難易度
 	private int tileDrawsize;	// タイルの描画サイズ
 	
-	private int playerSpeed;		// プレイヤースピード
-	
 	// 壁
 	private int wallWidth, wallHeight;		// 壁の大きさ
 	private int leftWallX, leftWallY;		// 左の壁の座標
 	private int rightWallX, rightWallY;	// 右の壁の座標
-	
+
 	// 十字キー押下フラグ
-	private boolean[] pressedCrossKey = {false, false, false, false};
+	private boolean[] pressedCrossKey = {false, false, false, false};	
 	
 	private Thread th;		// スレッド
 		
@@ -75,31 +70,15 @@ public class GamePanel extends JPanel implements Runnable {
 		difficulty = DIFFICULTY[1];
 		
 		// タイルパネルを生成
-		tilePanel = new TilePanel(this, difficulty);
+		playPanel = new GamePlayPanel(this, difficulty);
 		
 		// タイル画像を取得する
-		tileImages = tilePanel.getOnesetTileImages();
+		tileImages = playPanel.getOnesetTileImages();
 		
 		// ワンセットを取得する
-		oneset = tilePanel.getOneset();
+		oneset = playPanel.getOneset();
 		// タイルの描画サイズを取得する
-		tileDrawsize = tilePanel.getTileDrawsize();
-		
-		// プレイヤーラベルを作成
-		playerLabel = null;
-		try {
-			BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
-			// 画像の縦横比率
-			double drawRatio = 0.8;
-			int playerWidth = (int)(playerImage.getWidth() * tileDrawsize * drawRatio / playerImage.getHeight());
-			int playerHeight = (int)(tileDrawsize * drawRatio);
-			playerLabel = ImageLabel.getScaledImageJLabel(playerImage, playerWidth, playerHeight);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-			
-		// プレイヤーのスピードを設定
-		playerSpeed = 2;
+		tileDrawsize = playPanel.getTileDrawsize();
 			
 		// ワンセットのボックスと順番表示ボックスを作成
 		onesetBox = Box.createVerticalBox();
@@ -128,21 +107,19 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 			
 		// コンポーネントサイズを設定
-		playerLabel.setSize(playerLabel.getPreferredSize());
-		tilePanel.setSize(tilePanel.getPreferredSize());
+		playPanel.setSize(playPanel.getPreferredSize());
 		onesetBox.setSize(onesetBox.getPreferredSize());
 		orderNumBox.setSize(orderNumBox.getPreferredSize());
 			
 		// コンポーネント位置を設定
-		tilePanel.setLocation(horizonalCentering(this.getWidth(), tilePanel.getWidth()), verticalCentering(this.getHeight(), tilePanel.getHeight()));
-		playerLabel.setLocation(horizonalCentering(this.getWidth(), playerLabel.getWidth()), tilePanel.getY() + tilePanel.getHeight() + 5);
+		playPanel.setLocation(horizonalCentering(this.getWidth(), playPanel.getWidth()), verticalCentering(this.getHeight(), playPanel.getHeight()));
 			
 		// 壁の大きさを設定
 		wallWidth = tileDrawsize;
 		wallHeight = getHeight();
-		leftWallX = tilePanel.getX() - wallWidth;
+		leftWallX = playPanel.getX() - wallWidth;
 		leftWallY = 0;
-		rightWallX = tilePanel.getX() + tilePanel.getWidth();
+		rightWallX = playPanel.getX() + playPanel.getWidth();
 		rightWallY = 0;
 			
 		// ワンセットボックスの位置を設定
@@ -158,23 +135,12 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addAncestorListener(new GPAncestorListener(this));
 			
 		// コンポーネントをこのパネルに追加
-		this.add(playerLabel);
-		this.add(tilePanel);
+		this.add(playPanel);
 		this.add(onesetBox);
 		this.add(orderNumBox);
 			
 		th = new Thread(this);
 		th.start();
-	}
-	
-	/**
-	 * プレイヤーを描画する
-	 * @param vectorX 進む方向のX成分
-	 * @param vectorY 進む方向のY成分
-	 */
-	public void drawPlayer(int speed, int vectorX, int vectorY) {
-		Point point = playerLabel.getLocation();
-		playerLabel.setLocation(point.x + vectorX + (int)(Math.signum(vectorX) * speed), point.y + vectorY + (int)(Math.signum(vectorY) * speed));
 	}
 	
 	@Override
@@ -183,21 +149,30 @@ public class GamePanel extends JPanel implements Runnable {
 			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
-					drawPlayer(playerSpeed, VECTOR[i][0], VECTOR[i][1]);
+					playPanel.movePlayer(2, VECTOR[i][0], VECTOR[i][1]);
 				}
 			}
 			
+			// プレイヤーのスピードを設定
+			int playerSpeed = 2;
+			
 			// プレイヤーが壁の外に出ないようにする
-			int playerX = playerLabel.getX();
-			int playerWidth = playerLabel.getWidth();
-			if(playerX < leftWallX + wallWidth) {
-				playerLabel.setLocation(leftWallX + wallWidth, playerLabel.getY());
-			} else if(playerX + playerWidth > rightWallX) {
-				playerLabel.setLocation(rightWallX - playerWidth, playerLabel.getY());
+			Point relPlayerLoc = playPanel.getPlayerRelativeLocation();
+			int playerWidth = playPanel.getPlayerWidth(), playerHeight = playPanel.getPlayerHeight();
+			int playPanelX = playPanel.getX(), playPanelY = playPanel.getY();
+			int playPanelHeight = playPanel.getHeight();
+			
+			if(relPlayerLoc.x + playPanelX < leftWallX + wallWidth) {
+				playPanel.movePlayer(playerSpeed, RIGHT[0], RIGHT[1]);
+			}
+			if(relPlayerLoc.x + playPanelX + playerWidth > rightWallX) {
+				playPanel.movePlayer(playerSpeed, LEFT[0], LEFT[1]);
+			}
+			if(playPanelY + relPlayerLoc.y + playerHeight > playPanelHeight) {
+				playPanel.movePlayer(playerSpeed, UP[0], UP[1]);
 			}
 			
-			tilePanel.repaint();
-			playerLabel.repaint();
+			playPanel.repaint();
 			
 			try {
 				Thread.sleep(16);	// 16ms待機（60fps）
@@ -223,7 +198,7 @@ public class GamePanel extends JPanel implements Runnable {
 		pressedCrossKey[key] = false;
 	}
 	
-	public JPanel getTilePanel() {
-		return tilePanel;
+	public JPanel getPlayPanel() {
+		return playPanel;
 	}
 }
