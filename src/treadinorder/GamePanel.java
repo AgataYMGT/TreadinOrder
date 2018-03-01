@@ -70,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
 		difficulty = DIFFICULTY[1];
 		
 		// タイルパネルを生成
-		playPanel = new GamePlayPanel(this, difficulty);
+		playPanel = new GamePlayPanel(this, mPanel, difficulty);
 		
 		// タイル画像を取得する
 		tileImages = playPanel.getOnesetTileImages();

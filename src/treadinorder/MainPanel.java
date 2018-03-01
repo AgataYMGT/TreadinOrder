@@ -51,6 +51,9 @@ public class MainPanel extends JPanel implements Runnable {
 					this.add(gPanel);
 					repaint();
 					break;
+				case 2:
+					removeAll();
+					repaint();
 				}
 			}
 			oldState = state;

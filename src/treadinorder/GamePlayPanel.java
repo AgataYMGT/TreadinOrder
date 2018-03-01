@@ -26,10 +26,13 @@ public class GamePlayPanel extends JPanel {
 	public static final String PLAYERIMAGE_PATH = "assets/player.png";
 	
 	// インスタンス変数
+	private MainPanel mPanel;	// メインパネル
+	
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
 	
 	private int[][] trodTiles;	// 既に踏んだタイル
+	private int oldTrodTile;	// 直前に踏んだタイル
 	
 	private int topBottomSpace;	// 上下余白
 	
@@ -46,7 +49,9 @@ public class GamePlayPanel extends JPanel {
 
 	private final Random random = new Random();	// ランダムクラス
 	
-	public GamePlayPanel(JPanel parentPanel, int difficulty) {
+	public GamePlayPanel(JPanel parentPanel, MainPanel mPanel, int difficulty) {
+		this.mPanel = mPanel;
+		
 		// 指定する順番のワンセットをランダムに取得
 		oneset = random.nextInt(Tiles.values().length - 2) + 3;
 		
@@ -85,8 +90,10 @@ public class GamePlayPanel extends JPanel {
 		mapTiles = new Image[difficulty][difficulty];
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[i].length; j++) {
-				// その座標がダミーならワンセットからランダムに選び置き換える
-				mapTiles[i][j] = scaledTileImages[(map[i][j] == Maze.DUMMY) ? random.nextInt(oneset) : map[i][j]];
+				// その座標がダミーならワンセットからランダムに選び、タイル画像とダミー番号を置き換える
+				int randomNum = random.nextInt(oneset);
+				mapTiles[i][j] = scaledTileImages[(map[i][j] == Maze.DUMMY) ? randomNum : map[i][j]];
+				if(map[i][j] == Maze.DUMMY) map[i][j] = randomNum;
 			}
 		}
 		
@@ -107,6 +114,9 @@ public class GamePlayPanel extends JPanel {
 		// プレイヤーの初期位置を設定
 		playerX = TOUtils.horizonalCentering(mapSize, playerWidth);
 		playerY = topBottomSpace + mapSize + 5;
+		
+		// 直前に踏んだタイルを初期化
+		oldTrodTile = oneset - 1;
 	}
 	
 	@Override
@@ -119,15 +129,20 @@ public class GamePlayPanel extends JPanel {
 				// タイルを描画する
 				g2.drawImage(mapTiles[i][j], tileDrawsize * j, topBottomSpace + tileDrawsize * i, this);
 				
-				// タイルとプレイヤーが重なっているか確かめる
-				if( isTrod(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize) ) {
-					trodTiles[i][j] = 1;
-				}
-				
 				// 既に踏まれたタイルなら上から黒く塗る
 				if(trodTiles[i][j] == 1) {
 					g2.setColor(new Color(0, 0, 0, 200));
 					g2.fillRect(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize);
+					
+				// タイルとプレイヤーが重なっているか確かめる
+				} else if( isTrod(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize) ) {
+					trodTiles[i][j] = 1;
+					// 直前に踏んだタイル番号と連番になっていなければステートを切り替える
+					if(map[i][j] == oldTrodTile + 1  ||  map[i][j] == 0 && oldTrodTile == oneset - 1) {
+						oldTrodTile = map[i][j];
+					} else {
+						mPanel.setState(2);
+					}
 				}
 			}
 		}
