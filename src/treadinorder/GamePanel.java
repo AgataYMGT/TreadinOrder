@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 import treadinorder.eventlistener.GPAncestorListener;
 import treadinorder.eventlistener.GPKeyListener;
 
+import static treadinorder.TOUtils.horizonalCentering;
+import static treadinorder.TOUtils.verticalCentering;
+
 public class GamePanel extends JPanel implements Runnable {
 	// クラス変数
 	public static final int[] DIFFICULTY = {5, 7, 9, 11};	// 難易度
@@ -172,24 +175,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public void drawPlayer(int speed, int vectorX, int vectorY) {
 		Point point = playerLabel.getLocation();
 		playerLabel.setLocation(point.x + vectorX + (int)(Math.signum(vectorX) * speed), point.y + vectorY + (int)(Math.signum(vectorY) * speed));
-	}
-	
-	/**
-	 * 親に対して中央揃えにするためのX座標を返す
-	 * @param x 中央揃えにしたいオブジェクトの横幅
-	 * @return 中央揃えのためのX座標
-	 */
-	public int horizonalCentering(int parent, int width) {
-		return (parent - width) / 2;
-	}
-	
-	/**
-	 * 親に対して縦方向の中央揃えにするためのY座標を返す
-	 * @param y 縦中央揃えにしたいオブジェクトの縦幅
-	 * @return 縦中央揃えのためのY座標
-	 */
-	public int verticalCentering(int parent, int height) {
-		return (parent - height) / 2;
 	}
 	
 	@Override
