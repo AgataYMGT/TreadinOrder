@@ -211,6 +211,9 @@ public class GamePanel extends JPanel implements Runnable {
 				playerLabel.setLocation(rightWallX - playerWidth, playerLabel.getY());
 			}
 			
+			tilePanel.repaint();
+			playerLabel.repaint();
+			
 			try {
 				Thread.sleep(16);	// 16ms待機（60fps）
 			} catch (InterruptedException e) {
@@ -225,8 +228,6 @@ public class GamePanel extends JPanel implements Runnable {
 		g.fillRect(leftWallX, leftWallY, wallWidth, wallHeight);
 		// 右の壁を描画
 		g.fillRect(rightWallX, rightWallY, wallWidth, wallHeight);
-		
-		tilePanel.repaint();
 	}
 	
 	public void setPressedKey(int key) {
