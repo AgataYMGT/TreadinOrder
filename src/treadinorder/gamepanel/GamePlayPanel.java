@@ -112,7 +112,11 @@ public class GamePlayPanel extends JPanel {
 			
 			// プレイヤーの大きさを設定
 			double drawRatio = 0.8;	// タイルに対する描画比率
-			playerHeight = (int)(tileDrawsize * drawRatio);
+			if(topBottomSpace <= tileDrawsize) {
+				playerHeight = (int)(topBottomSpace * drawRatio);
+			} else {
+				playerHeight = (int)(tileDrawsize * drawRatio);
+			}
 			playerWidth = (int)(playerImage.getWidth() * playerHeight / playerImage.getHeight());
 			
 			this.playerImage = playerImage.getScaledInstance(playerWidth, playerHeight, Image.SCALE_AREA_AVERAGING);
