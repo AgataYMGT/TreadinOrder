@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import treadinorder.eventlistener.GPAncestorListener;
 import treadinorder.eventlistener.GPKeyListener;
+import treadinorder.gamepanel.GamePlayPanel;
 
 import static treadinorder.TOUtils.horizonalCentering;
 import static treadinorder.TOUtils.verticalCentering;

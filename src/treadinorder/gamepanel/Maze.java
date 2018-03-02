@@ -1,4 +1,4 @@
-package treadinorder;
+package treadinorder.gamepanel;
 
 import java.util.Arrays;
 import java.util.Collections;

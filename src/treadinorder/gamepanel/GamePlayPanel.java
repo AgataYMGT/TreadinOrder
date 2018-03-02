@@ -1,4 +1,4 @@
-package treadinorder;
+package treadinorder.gamepanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,14 +18,16 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import treadinorder.MainPanel;
+import treadinorder.TOUtils;
 import treadinorder.TreadinOrder.Tiles;
 
 public class GamePlayPanel extends JPanel {
 	// クラス変数
 	// プレイヤー画像の相対パス
-	public static final String PLAYERIMAGE_PATH = "assets/player.png";
+	public static final String PLAYERIMAGE_PATH = "../assets/player.png";
 	// ゴール画像の相対パス
-	public static final String GOALIMAGE_PATH = "assets/goal.png";
+	public static final String GOALIMAGE_PATH = "../assets/goal.png";
 	
 	// インスタンス変数
 	private MainPanel mPanel;	// メインパネル
@@ -84,7 +86,7 @@ public class GamePlayPanel extends JPanel {
 		
 		scaledTileImages = new Image[oneset];
 		for(int i = 0; i < oneset; i++) {
-			URL imgpath = getClass().getResource("assets/" + tiles.get(i).name() + ".png");
+			URL imgpath = getClass().getResource("../assets/" + tiles.get(i).name() + ".png");
 			try {
 				BufferedImage image = ImageIO.read(imgpath);
 				scaledTileImages[i] = image.getScaledInstance(tileDrawsize, tileDrawsize, Image.SCALE_AREA_AVERAGING);
