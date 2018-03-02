@@ -24,6 +24,8 @@ public class GamePlayPanel extends JPanel {
 	// クラス変数
 	// プレイヤー画像の相対パス
 	public static final String PLAYERIMAGE_PATH = "assets/player.png";
+	// ゴール画像の相対パス
+	public static final String GOALIMAGE_PATH = "assets/goal.png";
 	
 	// インスタンス変数
 	private MainPanel mPanel;	// メインパネル
@@ -46,6 +48,11 @@ public class GamePlayPanel extends JPanel {
 	private int playerX, playerY;				// プレイヤーの座標
 	
 	private Image playerImage;	// プレイヤーの画像
+	
+	private int goalWidth, goalHeight;		// ゴール画像の大きさ
+	private int goalX, goalY;				// ゴールの座標
+	
+	private Image goalImage;		// ゴールの画像
 
 	private final Random random = new Random();	// ランダムクラス
 	
@@ -117,6 +124,21 @@ public class GamePlayPanel extends JPanel {
 		
 		// 直前に踏んだタイルを初期化
 		oldTrodTile = oneset - 1;
+		
+		// ゴール画像を読み込む
+		try {
+			BufferedImage goalImage = ImageIO.read(getClass().getResource(GOALIMAGE_PATH));
+			
+			goalWidth = goalImage.getWidth() * topBottomSpace / goalImage.getHeight();
+			goalHeight = topBottomSpace;
+			this.goalImage = goalImage.getScaledInstance(goalWidth, goalHeight, Image.SCALE_AREA_AVERAGING);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		// ゴール画像の座標を設定
+		goalX = TOUtils.horizonalCentering(mapSize, goalWidth);
+		goalY = 0;
 	}
 	
 	@Override
@@ -149,6 +171,9 @@ public class GamePlayPanel extends JPanel {
 		
 		// プレイヤーを描画する
 		g2.drawImage(playerImage, playerX, playerY, this);
+		
+		// ゴールを描画する
+		g2.drawImage(goalImage, goalX, goalY, this);
 	}
 	
 	/**
