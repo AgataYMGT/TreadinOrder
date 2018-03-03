@@ -5,8 +5,10 @@
 package treadinorder;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 public class MainPanel extends JPanel implements Runnable {
@@ -46,10 +48,13 @@ public class MainPanel extends JPanel implements Runnable {
 			if(state != oldState) {
 				switch(state) {
 				case 1:	// 1ならGamePanel
-					this.removeAll();
-					gPanel = new GamePanel(this);
-					this.add(gPanel);
-					repaint();
+					switchPanel(new LevelShowPanel(new Font(GEN_FONTNAME, Font.PLAIN, 84), LevelShowPanel.EASY));
+					try {
+						Thread.sleep(3000L);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					switchPanel(new GamePanel(this));
 					break;
 				case 2:
 					removeAll();
@@ -64,6 +69,13 @@ public class MainPanel extends JPanel implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private void switchPanel(JComponent component) {
+		removeAll();
+		add(component);
+		revalidate();
+		repaint();
 	}
 	
 	/**
