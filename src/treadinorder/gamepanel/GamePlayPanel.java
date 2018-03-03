@@ -169,7 +169,7 @@ public class GamePlayPanel extends JPanel {
 					if(map[i][j] == oldTrodTile + 1  ||  map[i][j] == 0 && oldTrodTile == oneset - 1) {
 						oldTrodTile = map[i][j];
 					} else {
-						mPanel.setState(2);
+						mPanel.switchGameOverPanel(0);
 					}
 				}
 			}

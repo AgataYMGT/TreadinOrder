@@ -1,13 +1,14 @@
 package treadinorder;
 
 import java.awt.Font;
+import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class LevelShowPanel extends JPanel {
+public class LevelShowPanel extends JPanel implements Runnable {
 	// クラス変数
 	// 難易度
 	public static final int EASY = 1;
@@ -15,8 +16,15 @@ public class LevelShowPanel extends JPanel {
 	public static final int HARD = 3;
 	public static final int VERY_HARD = 4;
 	
-	public LevelShowPanel(Font font, int difficulty) {
+	// インスタンス変数
+	private MainPanel mPanel;
+	
+	private Thread th;		// スレッド
+	
+	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		this.mPanel = mPanel;
 		
 		// レベルラベルを作成
 		JLabel levelLabel = new JLabel("レベル： " + EASY);
@@ -50,5 +58,19 @@ public class LevelShowPanel extends JPanel {
 		add(Box.createVerticalStrut(10));
 		add(difLabel);
 		add(Box.createVerticalGlue());
+		
+		th = new Thread(this);
+		th.start();
+	}
+
+	@Override
+	public void run() {
+		try {
+			Thread.sleep(3000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		mPanel.switchGamePanel(GamePanel.EASY);
 	}
 }

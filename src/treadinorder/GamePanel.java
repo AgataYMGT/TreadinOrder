@@ -22,7 +22,11 @@ import static treadinorder.TOUtils.verticalCentering;
 
 public class GamePanel extends JPanel implements Runnable {
 	// クラス変数
-	public static final int[] DIFFICULTY = {5, 7, 9, 11};	// 難易度
+	// 難易度に対する一辺の長さ
+	public static final int EASY = 5;
+	public static final int NORMAL = 7;
+	public static final int HARD = 9;
+	public static final int VERY_HEAD = 11;
 	
 	// キー方向
 	public static final int K_UP = 0;
@@ -61,14 +65,14 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private Thread th;		// スレッド
 		
-	public GamePanel(MainPanel mPanel) {
+	public GamePanel(MainPanel mPanel, int oneSide) {
 		// パネルサイズを設定
 		this.setSize(mPanel.getSize());
 		// レイアウトマネージャーを停止
 		this.setLayout(null);
 		
 		// 難易度を設定
-		difficulty = DIFFICULTY[1];
+		difficulty = oneSide;
 		
 		// タイルパネルを生成
 		playPanel = new GamePlayPanel(this, mPanel, difficulty);

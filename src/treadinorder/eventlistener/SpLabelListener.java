@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 
+import treadinorder.LevelShowPanel;
 import treadinorder.MainPanel;
 
 public class SpLabelListener implements MouseListener {
@@ -23,8 +24,7 @@ public class SpLabelListener implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// スタートラベルがクリックされるとステートを1に変更
-		mPanel.setState(1);
+		mPanel.switchLevelShowPanel(LevelShowPanel.EASY);
 	}
 
 	@Override
