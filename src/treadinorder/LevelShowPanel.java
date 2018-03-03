@@ -1,7 +1,6 @@
 package treadinorder;
 
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,14 +16,18 @@ public class LevelShowPanel extends JPanel implements Runnable {
 	public static final int VERY_HARD = 4;
 	
 	// インスタンス変数
-	private MainPanel mPanel;
+	private MainPanel mPanel;	// メインパネル
+	
+	private int countDown;			// カウントダウン
+	private JLabel countDownLabel; // カウントダウンラベル
 	
 	private Thread th;		// スレッド
 	
-	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty) {
+	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty, int countDown) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		this.mPanel = mPanel;
+		this.countDown = countDown;
 		
 		// レベルラベルを作成
 		JLabel levelLabel = new JLabel("レベル： " + EASY);
@@ -48,15 +51,23 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		difLabel.setFont(font);
 		difLabel.setSize(difLabel.getPreferredSize());
 		
+		// カウンタダウンラベルを設定
+		this.countDownLabel = new JLabel();
+		countDownLabel.setFont(font);
+		countDownLabel.setSize(levelLabel.getPreferredSize());
+		
 		// コンポーネントを中央揃えに設定
 		levelLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		difLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		countDownLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		
 		// コンポーネントを追加
 		add(Box.createVerticalGlue());
 		add(levelLabel);
 		add(Box.createVerticalStrut(10));
 		add(difLabel);
+		add(Box.createVerticalStrut(84));
+		add(countDownLabel);
 		add(Box.createVerticalGlue());
 		
 		th = new Thread(this);
@@ -65,12 +76,17 @@ public class LevelShowPanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(3000L);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		// カウントダウンを行う
+		for(int i = countDown - 1; i > -1; i--) {
+			countDownLabel.setText("ゲーム開始まで： " + i);
+			try {
+				Thread.sleep(1000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
+		// ゲームパネルに切り替える
 		mPanel.switchGamePanel(GamePanel.EASY);
 	}
 }

@@ -52,7 +52,8 @@ public class MainPanel extends JPanel {
 	 * @param difficulty	難易度
 	 */
 	public void switchLevelShowPanel(int difficulty) {
-		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty));
+		int countDown = 6;
+		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty, countDown));
 	}
 	
 	/**
