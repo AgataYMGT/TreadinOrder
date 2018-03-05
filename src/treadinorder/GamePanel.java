@@ -1,14 +1,11 @@
 package treadinorder;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,7 +44,6 @@ public class GamePanel extends JPanel implements Runnable {
 	// コンポーネント
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
-	private Box orderNumBox;				// ワンセットの順番を表示するボックス
 	
 	private Image[] tileImages;		// タイル画像の配列
 	
@@ -86,35 +82,21 @@ public class GamePanel extends JPanel implements Runnable {
 		tileDrawsize = playPanel.getTileDrawsize();
 			
 		// ワンセットのボックスと順番表示ボックスを作成
+		int onesetTileSize = (int)(getWidth() * 0.07);
+		
 		onesetBox = Box.createVerticalBox();
-		orderNumBox = Box.createVerticalBox();
 		for(int i = 0; i < oneset; i++) {
 			try {
-				JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(tileImages[i], tileDrawsize, tileDrawsize);
+				JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(tileImages[i], onesetTileSize, onesetTileSize);
 				onesetBox.add(onesetTileLabel, 0);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
-			orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
-			orderNumBox.add(orderNumLabel, 0);
-		}
-		for(int i = 0; i < 2; i++) {
-			try {
-				JLabel onesetTileLabel = ImageLabel.getScaledImageJLabel(tileImages[i], tileDrawsize, tileDrawsize);
-				onesetBox.add(onesetTileLabel, 0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			JLabel orderNumLabel = new JLabel(String.valueOf(i + 1));
-			orderNumLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 100));
-			orderNumBox.add(orderNumLabel, 0);
 		}
 			
 		// コンポーネントサイズを設定
 		playPanel.setSize(playPanel.getPreferredSize());
 		onesetBox.setSize(onesetBox.getPreferredSize());
-		orderNumBox.setSize(orderNumBox.getPreferredSize());
 			
 		// コンポーネント位置を設定
 		playPanel.setLocation(horizonalCentering(this.getWidth(), playPanel.getWidth()), verticalCentering(this.getHeight(), playPanel.getHeight()));
@@ -131,8 +113,6 @@ public class GamePanel extends JPanel implements Runnable {
 		int onesetBoxX = horizonalCentering(leftWallX, onesetBox.getWidth()) + rightWallX + wallWidth;
 		int onesetBoxY = verticalCentering(this.getHeight(), onesetBox.getHeight());
 		onesetBox.setLocation(onesetBoxX, onesetBoxY);
-		// 順番表示ボックスの設定
-		orderNumBox.setLocation(onesetBoxX - orderNumBox.getWidth() - 10, onesetBoxY);
 			
 		// リスナーを追加
 		this.addKeyListener(new GPKeyListener(this));
@@ -142,7 +122,6 @@ public class GamePanel extends JPanel implements Runnable {
 		// コンポーネントをこのパネルに追加
 		this.add(playPanel);
 		this.add(onesetBox);
-		this.add(orderNumBox);
 			
 		th = new Thread(this);
 		th.start();

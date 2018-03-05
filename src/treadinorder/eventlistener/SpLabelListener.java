@@ -24,7 +24,7 @@ public class SpLabelListener implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		mPanel.switchLevelShowPanel(LevelShowPanel.EASY);
+		mPanel.switchLevelShowPanel(LevelShowPanel.NORMAL);
 	}
 
 	@Override

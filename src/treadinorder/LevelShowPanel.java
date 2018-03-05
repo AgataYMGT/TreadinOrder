@@ -87,6 +87,6 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		}
 		
 		// ゲームパネルに切り替える
-		mPanel.switchGamePanel(GamePanel.EASY);
+		mPanel.switchGamePanel(GamePanel.NORMAL);
 	}
 }
