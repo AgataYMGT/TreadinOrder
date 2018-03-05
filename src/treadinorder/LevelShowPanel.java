@@ -21,6 +21,8 @@ public class LevelShowPanel extends JPanel implements Runnable {
 	private int countDown;			// カウントダウン
 	private JLabel countDownLabel; // カウントダウンラベル
 	
+	private int gpDifficulty;		// ゲームパネルにおける難易度
+	
 	private Thread th;		// スレッド
 	
 	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty, int countDown) {
@@ -30,7 +32,7 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		this.countDown = countDown;
 		
 		// レベルラベルを作成
-		JLabel levelLabel = new JLabel("レベル： " + EASY);
+		JLabel levelLabel = new JLabel("レベル： " + difficulty);
 		levelLabel.setFont(font);
 		levelLabel.setSize(levelLabel.getPreferredSize());
 		
@@ -38,14 +40,19 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		String difStr;
 		if(difficulty == EASY) {
 			difStr = "EASY";
+			gpDifficulty = GamePanel.EASY;
 		} else if(difficulty == NORMAL) {
 			difStr = "NORMAL";
+			gpDifficulty = GamePanel.NORMAL;
 		} else if(difficulty == HARD) {
 			difStr = "HARD";
+			gpDifficulty = GamePanel.HARD;
 		} else if(difficulty == VERY_HARD) {
 			difStr = "VERY HARD";
+			gpDifficulty = GamePanel.VERY_HARD;
 		} else {
 			difStr = null;
+			gpDifficulty = GamePanel.EASY;
 		}
 		JLabel difLabel = new JLabel("難易度： " + difStr);
 		difLabel.setFont(font);
@@ -87,6 +94,6 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		}
 		
 		// ゲームパネルに切り替える
-		mPanel.switchGamePanel(GamePanel.NORMAL);
+		mPanel.switchGamePanel(gpDifficulty);
 	}
 }

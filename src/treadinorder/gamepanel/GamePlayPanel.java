@@ -255,4 +255,12 @@ public class GamePlayPanel extends JPanel {
 	public int getPlayerHeight() {
 		return playerHeight;
 	}
+	
+	/**
+	 * マップの上下余白の大きさを返す
+	 * @return マップの上下余白の大きさ
+	 */
+	public int getTopBottomSpace() {
+		return topBottomSpace;
+	}
 }

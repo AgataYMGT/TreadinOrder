@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int EASY = 5;
 	public static final int NORMAL = 7;
 	public static final int HARD = 9;
-	public static final int VERY_HEAD = 11;
+	public static final int VERY_HARD = 11;
 	
 	// キー方向
 	public static final int K_UP = 0;
@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Random random = new Random();	// ランダムクラス
 	
 	// コンポーネント
+	private MainPanel mPanel;			// メインパネル
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
 	
@@ -66,6 +67,9 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setSize(mPanel.getSize());
 		// レイアウトマネージャーを停止
 		this.setLayout(null);
+		
+		// メインパネル初期化
+		this.mPanel = mPanel;
 		
 		// 難易度を設定
 		difficulty = oneSide;
@@ -129,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	@Override
 	public void run() {
-		while(true) {
+		while(playPanel.getPlayerRelativeLocation().y > playPanel.getTopBottomSpace()) {
 			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
@@ -163,6 +167,17 @@ public class GamePanel extends JPanel implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		// クリアすると次の難易度に変更
+		if(difficulty == EASY) {
+			mPanel.switchLevelShowPanel(LevelShowPanel.NORMAL);
+		} else if(difficulty == NORMAL) {
+			mPanel.switchLevelShowPanel(LevelShowPanel.HARD);
+		} else if(difficulty == HARD) {
+			mPanel.switchLevelShowPanel(LevelShowPanel.VERY_HARD);
+		} else {
+			System.exit(1);
 		}
 	}
 	
