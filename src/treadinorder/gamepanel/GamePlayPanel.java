@@ -19,6 +19,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import treadinorder.GamePanel;
 import treadinorder.MainPanel;
 import treadinorder.TOUtils;
 import treadinorder.TreadinOrder.Tiles;
@@ -32,9 +33,12 @@ public class GamePlayPanel extends JPanel {
 	
 	// インスタンス変数
 	private MainPanel mPanel;	// メインパネル
+	private GamePanel gPanel;	// ゲームパネル
 	
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
+	
+	private int difficulty;		// 難易度
 	
 	private List<Integer> nowTread = new ArrayList<Integer>();			// 今踏んでいるタイル
 	private int lastTrod;															// 最後に踏んだタイル
@@ -57,11 +61,15 @@ public class GamePlayPanel extends JPanel {
 	private int goalX, goalY;				// ゴールの座標
 	
 	private Image goalImage;		// ゴールの画像
+	
+	private boolean isGameOver;	// ゲームオーバーフラグ
 
 	private final Random random = new Random();	// ランダムクラス
 	
-	public GamePlayPanel(JPanel parentPanel, MainPanel mPanel, int difficulty) {
+	public GamePlayPanel(GamePanel gPanel, MainPanel mPanel, int difficulty) {
 		this.mPanel = mPanel;
+		this.gPanel = gPanel;
+		this.difficulty = difficulty;
 		
 		// 指定する順番のワンセットをランダムに取得
 		oneset = random.nextInt(Tiles.values().length - 2) + 3;
@@ -69,18 +77,18 @@ public class GamePlayPanel extends JPanel {
 		// マップを取得
 		map = new Maze(difficulty, difficulty, oneset).getMap();
 		// マップサイズを設定
-		mapSize = (int)(parentPanel.getHeight() * 0.8);
+		mapSize = (int)(gPanel.getHeight() * 0.8);
 		
 		trodTiles = new int[map.length][map.length];
 		
 		// 上下余白のサイズを設定
-		topBottomSpace = (parentPanel.getHeight() - mapSize) / 2;
+		topBottomSpace = (gPanel.getHeight() - mapSize) / 2;
 		
 		// タイルを描画する大きさを設定
 		tileDrawsize = mapSize / difficulty;
 		
 		// パネルの推奨サイズを設定
-		this.setPreferredSize(new Dimension(tileDrawsize * map.length, parentPanel.getHeight()));
+		this.setPreferredSize(new Dimension(tileDrawsize * map.length, gPanel.getHeight()));
 		
 		// ワンセットのタイルをランダムに決定、画像を取得する
 		List<Tiles> tiles = Arrays.asList(Tiles.values());
@@ -147,6 +155,9 @@ public class GamePlayPanel extends JPanel {
 		// ゴール画像の座標を設定
 		goalX = TOUtils.horizonalCentering(mapSize, goalWidth);
 		goalY = 0;
+		
+		// ゲームオーバーフラグを初期化
+		isGameOver = false;
 	}
 	
 	@Override
@@ -177,7 +188,7 @@ public class GamePlayPanel extends JPanel {
 		switch(nowTread.size()) {
 		case 0:
 			// タイルからスタート地点に帰ってきたらゲームオーバー
-			if(lastTrod != oneset - 1) mPanel.switchGameOverPanel(0);
+			if(lastTrod != oneset - 1) isGameOver = true;;
 			break;
 			
 		case 1:
@@ -194,10 +205,9 @@ public class GamePlayPanel extends JPanel {
 					break;
 				}
 			}
-			
 			// 直前に踏んだタイルと連番になっていなければゲームオーバー
 			if(!(newTread == lastTrod + 1  ||  newTread == 0 && lastTrod == oneset - 1)) {
-				mPanel.switchGameOverPanel(0);
+				isGameOver = true;
 			}
 			break;
 		}
@@ -255,6 +265,14 @@ public class GamePlayPanel extends JPanel {
 	}
 	
 	/**
+	 * 既に踏んだタイルの配列を返す
+	 * @return 既に踏んだタイルの配列
+	 */
+	public int[][] getTrodTiles() {
+		return trodTiles;
+	}
+	
+	/**
 	 * このパネルでのタイルの描画サイズを返す
 	 * @return　タイルの描画サイズ
 	 */
@@ -292,5 +310,13 @@ public class GamePlayPanel extends JPanel {
 	 */
 	public int getTopBottomSpace() {
 		return topBottomSpace;
+	}
+	
+	/**
+	 * ゲームオーバーかどうかを返す
+	 * @return ゲームオーバーフラグ、ゲームオーバーならtrue、そうでなければfalse
+	 */
+	public boolean isGameOver() {
+		return isGameOver;
 	}
 }

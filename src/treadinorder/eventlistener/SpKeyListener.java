@@ -17,7 +17,7 @@ public class SpKeyListener implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		// Spaceキーが押下されたらゲームを始める
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			mPanel.switchLevelShowPanel(LevelShowPanel.EASY);
+			mPanel.switchLevelShowPanel(LevelShowPanel.EASY, 0);
 		}
 	}
 

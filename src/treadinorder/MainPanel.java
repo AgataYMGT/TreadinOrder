@@ -51,9 +51,9 @@ public class MainPanel extends JPanel {
 	 * 難易度はLevelShowPanelのクラス変数から選択する
 	 * @param difficulty	難易度
 	 */
-	public void switchLevelShowPanel(int difficulty) {
+	public void switchLevelShowPanel(int difficulty, int score) {
 		int countDown = 6;
-		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty, countDown));
+		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty, countDown, score));
 	}
 	
 	/**
@@ -61,8 +61,8 @@ public class MainPanel extends JPanel {
 	 * 一辺のタイルの数はGamePanelのクラス変数から難易度として選択する
 	 * @param oneSide	一辺のタイルの数
 	 */
-	public void switchGamePanel(int oneSide) {
-		switchPanel(new GamePanel(this, oneSide));
+	public void switchGamePanel(int oneSide, int score) {
+		switchPanel(new GamePanel(this, oneSide, score));
 	}
 	
 	/**

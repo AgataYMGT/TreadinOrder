@@ -25,6 +25,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int HARD = 9;
 	public static final int VERY_HARD = 11;
 	
+	// 難易度ごとのスコア
+	public static final int EASY_SCORE = 250;
+	public static final int NORMAL_SCORE = 500;
+	public static final int HARD_SCORE = 750;
+	public static final int VERYHARD_SCORE = 1000;
+	
 	// キー方向
 	public static final int K_UP = 0;
 	public static final int K_LEFT = 1;
@@ -60,16 +66,18 @@ public class GamePanel extends JPanel implements Runnable {
 	// 十字キー押下フラグ
 	private boolean[] pressedCrossKey = {false, false, false, false};	
 	
+	private int score;		// スコア
+	
 	private Thread th;		// スレッド
 		
-	public GamePanel(MainPanel mPanel, int oneSide) {
+	public GamePanel(MainPanel mPanel, int oneSide, int score) {
+		this.mPanel = mPanel;
+		this.score = score;
+		
 		// パネルサイズを設定
 		this.setSize(mPanel.getSize());
 		// レイアウトマネージャーを停止
 		this.setLayout(null);
-		
-		// メインパネル初期化
-		this.mPanel = mPanel;
 		
 		// 難易度を設定
 		difficulty = oneSide;
@@ -133,7 +141,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	@Override
 	public void run() {
-		while(playPanel.getPlayerRelativeLocation().y > playPanel.getTopBottomSpace()) {
+		while(playPanel.getPlayerRelativeLocation().y > playPanel.getTopBottomSpace() && !playPanel.isGameOver()) {
 			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
@@ -169,15 +177,33 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		
-		// クリアすると次の難易度に変更
-		if(difficulty == EASY) {
-			mPanel.switchLevelShowPanel(LevelShowPanel.NORMAL);
-		} else if(difficulty == NORMAL) {
-			mPanel.switchLevelShowPanel(LevelShowPanel.HARD);
-		} else if(difficulty == HARD) {
-			mPanel.switchLevelShowPanel(LevelShowPanel.VERY_HARD);
+		// スコアを算出
+		int[][] trodTiles = playPanel.getTrodTiles();
+		int trodTilesCount = 0;
+		for(int i = 0; i < trodTiles.length; i++) {
+			for(int j = 0; j < trodTiles[i].length; j++) {
+				if(trodTiles[i][j] == 1) trodTilesCount++;
+			}
+		}
+		for(int i = 0; i < trodTilesCount - 1; i++) {
+			addScore();
+		}
+		System.out.println(score);
+		
+		// ゲームオーバーならパネルを切り替える
+		if( playPanel.isGameOver() ) {
+			mPanel.switchGameOverPanel(score);
 		} else {
-			System.exit(1);
+			// クリアすると次の難易度に変更
+			if(difficulty == EASY) {
+				mPanel.switchLevelShowPanel(LevelShowPanel.NORMAL, score);
+			} else if(difficulty == NORMAL) {
+				mPanel.switchLevelShowPanel(LevelShowPanel.HARD, score);
+			} else if(difficulty == HARD) {
+				mPanel.switchLevelShowPanel(LevelShowPanel.VERY_HARD, score);
+			} else {
+				System.exit(1);
+			}
 		}
 	}
 	
@@ -195,6 +221,29 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setReleasedKey(int key) {
 		pressedCrossKey[key] = false;
+	}
+	
+	/**
+	 * 難易度に応じたスコアを加算する
+	 * @param difficulty	難易度
+	 */
+	private void addScore() {
+		switch(difficulty) {
+		case EASY:
+			this.score += EASY_SCORE;
+			break;
+		case NORMAL:
+			this.score += NORMAL_SCORE;
+			break;
+		case HARD:
+			score += HARD_SCORE;
+			break;
+		case VERY_HARD:
+			score += VERYHARD_SCORE;
+			break;
+		default:
+			break;	
+		}
 	}
 	
 	public JPanel getPlayPanel() {

@@ -22,10 +22,13 @@ public class LevelShowPanel extends JPanel implements Runnable {
 	private JLabel countDownLabel; // カウントダウンラベル
 	
 	private int gpDifficulty;		// ゲームパネルにおける難易度
+	private int score;					// 現在までのスコア
 	
 	private Thread th;		// スレッド
 	
-	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty, int countDown) {
+	public LevelShowPanel(MainPanel mPanel, Font font, int difficulty, int countDown, int score) {
+		this.score = score;
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		this.mPanel = mPanel;
@@ -94,6 +97,6 @@ public class LevelShowPanel extends JPanel implements Runnable {
 		}
 		
 		// ゲームパネルに切り替える
-		mPanel.switchGamePanel(gpDifficulty);
+		mPanel.switchGamePanel(gpDifficulty, score);
 	}
 }
