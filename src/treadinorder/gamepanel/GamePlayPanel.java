@@ -173,13 +173,21 @@ public class GamePlayPanel extends JPanel {
 			}
 		}
 		
-		// 踏んでいるタイルが１つのとき
-		if(nowTread.size() == 1) {
+		// 踏んでいるタイルの数
+		switch(nowTread.size()) {
+		case 0:
+			// タイルからスタート地点に帰ってきたらゲームオーバー
+			if(lastTrod != oneset - 1) mPanel.switchGameOverPanel(0);
+			break;
+			
+		case 1:
+			// 最後に踏んだタイルを取得
 			lastTrod = nowTread.get(0);
-		
-		// 踏んでいるタイルが２つのとき
-		} else if(nowTread.size() == 2) {
+			break;
+			
+		case 2:
 			int newTread = -1;	// 今新しく踏んだタイル
+			// 新しく踏んだ方のタイルを取得する
 			for(int i = 0; i < nowTread.size(); i++) {
 				if(nowTread.get(i) != lastTrod) {
 					newTread = nowTread.get(i);
@@ -191,6 +199,7 @@ public class GamePlayPanel extends JPanel {
 			if(!(newTread == lastTrod + 1  ||  newTread == 0 && lastTrod == oneset - 1)) {
 				mPanel.switchGameOverPanel(0);
 			}
+			break;
 		}
 		
 		// 踏んでいるタイルのリストを初期化
