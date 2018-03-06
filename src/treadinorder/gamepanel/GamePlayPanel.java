@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +36,9 @@ public class GamePlayPanel extends JPanel {
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
 	
-	private int[][] trodTiles;	// 既に踏んだタイル
-	private int oldTrodTile;	// 直前に踏んだタイル
+	private List<Integer> nowTread = new ArrayList<Integer>();			// 今踏んでいるタイル
+	private int lastTrod;															// 最後に踏んだタイル
+	private int[][] trodTiles;													// 既に踏んだタイル
 	
 	private int topBottomSpace;	// 上下余白
 	
@@ -129,7 +131,7 @@ public class GamePlayPanel extends JPanel {
 		playerY = topBottomSpace + mapSize + 5;
 		
 		// 直前に踏んだタイルを初期化
-		oldTrodTile = oneset - 1;
+		lastTrod = oneset - 1;
 		
 		// ゴール画像を読み込む
 		try {
@@ -157,23 +159,42 @@ public class GamePlayPanel extends JPanel {
 				// タイルを描画する
 				g2.drawImage(mapTiles[i][j], tileDrawsize * j, topBottomSpace + tileDrawsize * i, this);
 				
-				// 既に踏まれたタイルなら上から黒く塗る
+				// タイルとプレイヤーの重なりを確認し、踏んだタイルリストへの追加とカウントを行う
+				if( isTrod(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize) ) {
+					trodTiles[i][j] = 1;
+					nowTread.add(map[i][j]);
+				}
+				
+				// 踏まれているタイルは黒く描画する
 				if(trodTiles[i][j] == 1) {
 					g2.setColor(new Color(0, 0, 0, 200));
 					g2.fillRect(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize);
-					
-				// タイルとプレイヤーが重なっているか確かめる
-				} else if( isTrod(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize) ) {
-					trodTiles[i][j] = 1;
-					// 直前に踏んだタイル番号と連番になっていなければステートを切り替える
-					if(map[i][j] == oldTrodTile + 1  ||  map[i][j] == 0 && oldTrodTile == oneset - 1) {
-						oldTrodTile = map[i][j];
-					} else {
-						mPanel.switchGameOverPanel(0);
-					}
 				}
 			}
 		}
+		
+		// 踏んでいるタイルが１つのとき
+		if(nowTread.size() == 1) {
+			lastTrod = nowTread.get(0);
+		
+		// 踏んでいるタイルが２つのとき
+		} else if(nowTread.size() == 2) {
+			int newTread = -1;	// 今新しく踏んだタイル
+			for(int i = 0; i < nowTread.size(); i++) {
+				if(nowTread.get(i) != lastTrod) {
+					newTread = nowTread.get(i);
+					break;
+				}
+			}
+			
+			// 直前に踏んだタイルと連番になっていなければゲームオーバー
+			if(!(newTread == lastTrod + 1  ||  newTread == 0 && lastTrod == oneset - 1)) {
+				mPanel.switchGameOverPanel(0);
+			}
+		}
+		
+		// 踏んでいるタイルのリストを初期化
+		nowTread.clear();
 		
 		// プレイヤーを描画する
 		g2.drawImage(playerImage, playerX, playerY, this);
