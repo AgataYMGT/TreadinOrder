@@ -1,5 +1,6 @@
 package treadinorder;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -195,11 +196,11 @@ public class GamePanel extends JPanel implements Runnable {
 		} else {
 			// クリアすると次の難易度に変更
 			if(difficulty == EASY) {
-				mPanel.switchLevelShowPanel(LevelShowPanel.NORMAL, score);
+				mPanel.switchClearedLabel(LevelShowPanel.NORMAL, score);
 			} else if(difficulty == NORMAL) {
-				mPanel.switchLevelShowPanel(LevelShowPanel.HARD, score);
+				mPanel.switchClearedLabel(LevelShowPanel.HARD, score);
 			} else if(difficulty == HARD) {
-				mPanel.switchLevelShowPanel(LevelShowPanel.VERY_HARD, score);
+				mPanel.switchClearedLabel(LevelShowPanel.VERY_HARD, score);
 			} else {
 				System.exit(1);
 			}

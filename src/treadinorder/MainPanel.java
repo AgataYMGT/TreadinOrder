@@ -65,6 +65,11 @@ public class MainPanel extends JPanel {
 		switchPanel(new GamePanel(this, oneSide, score));
 	}
 	
+	public void switchClearedLabel(int difficulty, int score) {
+		long showTime = 2000L;
+		switchPanel(new ClearedPanel(this, difficulty, score, showTime));
+	}
+	
 	/**
 	 * ゲームオーバーパネルに切り替える
 	 * @param score	スコア
