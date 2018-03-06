@@ -183,12 +183,13 @@ public class GamePlayPanel extends JPanel {
 				}
 			}
 		}
+		if( isTrod(0, topBottomSpace + mapSize, mapSize, topBottomSpace) ) nowTread.add(oneset - 1);
 		
 		// 踏んでいるタイルの数
 		switch(nowTread.size()) {
 		case 0:
 			// タイルからスタート地点に帰ってきたらゲームオーバー
-			if(lastTrod != oneset - 1) isGameOver = true;;
+			if(lastTrod == 0) isGameOver = true;
 			break;
 			
 		case 1:
