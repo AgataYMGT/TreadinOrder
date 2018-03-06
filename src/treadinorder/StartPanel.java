@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import treadinorder.TreadinOrder.Tiles;
+import treadinorder.eventlistener.SPAncestorListener;
 import treadinorder.eventlistener.SpKeyListener;
 import treadinorder.eventlistener.SpLabelListener;
 
@@ -73,6 +74,7 @@ public class StartPanel extends JPanel {
 		// リスナーを各コンポーネントに追加
 		beginLabel.addMouseListener(new SpLabelListener(beginLabel, mp));
 		this.addKeyListener(new SpKeyListener(mp));
+		this.addAncestorListener(new SPAncestorListener(this));
 		
 		// タイル画像用のFlowLayoutパネル作成
 		JPanel tilePanel = new JPanel(new FlowLayout());

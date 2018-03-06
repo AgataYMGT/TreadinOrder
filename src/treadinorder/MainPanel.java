@@ -5,70 +5,71 @@
 package treadinorder;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class MainPanel extends JPanel implements Runnable {
-	public int panelWidth, panelHeight;
-	
-	public static final String GEN_FONTNAME = "IPAフォント";
-	
-	// ゲームステート(状態)
-	private int state;
-	private int oldState;
+public class MainPanel extends JPanel {
+	// クラス変数	
+	public static final String GEN_FONTNAME = "IPAフォント";	// デフォルトフォント
 	
 	// パネル
 	private StartPanel sPanel;
-	private GamePanel gPanel;
-	private GameOverPanel goPanel;
-	
-	// スレッド
-	Thread th;
 	
 	public MainPanel(Dimension panelSize) {
-		panelWidth = panelSize.width;
-		panelHeight = panelSize.height;
+		this.setSize(panelSize);
 		
 		// グリッド(行1, 縦1)を作成
 		this.setLayout(new GridLayout(1, 1));
 		
 		// 最初にStartPanelを表示するように
-		this.sPanel = new StartPanel(this);
-		this.add(sPanel);
-		
-		// スレッドの生成,実行（並列処理開始）
-		th = new Thread(this);
-		th.start();
-	}
-	
-	public void run() {
-		// ステートを監視、値が変わるとパネルを差し替える
-		while(true) {
-			if(state != oldState) {
-				switch(state) {
-				case 1:	// 1ならGamePanel
-					this.removeAll();
-					gPanel = new GamePanel(this);
-					this.add(gPanel);
-					break;
-				}
-			}
-			oldState = state;
-			revalidate();
-			try {
-				Thread.sleep(100L);	// 100ms待機
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		this.add(new StartPanel(this));
 	}
 	
 	/**
-	 * ゲームステートのセッター
-	 * @param state ゲームステート
+	 * パネルを差し替える
+	 * @param component	差し替えるコンポーネント
 	 */
-	public void setState(int state) {
-		this.state = state;
+	private void switchPanel(JComponent component) {
+		removeAll();
+		add(component);
+		revalidate();
+		repaint();
+	}
+	
+	/**
+	 * スタートパネルに切り替える
+	 */
+	public void switchStartPanel() {
+		switchPanel(sPanel);
+	}
+	
+	/**
+	 * 難易度表示パネルに切り替える
+	 * 難易度はLevelShowPanelのクラス変数から選択する
+	 * @param difficulty	難易度
+	 */
+	public void switchLevelShowPanel(int difficulty, int score) {
+		int countDown = 6;
+		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty, countDown, score));
+	}
+	
+	/**
+	 * ゲームパネルに切り替える
+	 * 一辺のタイルの数はGamePanelのクラス変数から難易度として選択する
+	 * @param oneSide	一辺のタイルの数
+	 */
+	public void switchGamePanel(int oneSide, int score) {
+		switchPanel(new GamePanel(this, oneSide, score));
+	}
+	
+	/**
+	 * ゲームオーバーパネルに切り替える
+	 * @param score	スコア
+	 */
+	public void switchGameOverPanel(int score) {
+		switchPanel(new GameOverPanel());
 	}
 }
