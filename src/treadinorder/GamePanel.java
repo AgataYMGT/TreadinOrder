@@ -188,7 +188,6 @@ public class GamePanel extends JPanel implements Runnable {
 		for(int i = 0; i < trodTilesCount - 1; i++) {
 			addScore();
 		}
-		System.out.println(score);
 		
 		// ゲームオーバーならパネルを切り替える
 		if( playPanel.isGameOver() ) {
