@@ -86,6 +86,6 @@ public class MainPanel extends JPanel {
 	 * @param score	スコア
 	 */
 	public void switchGameOverPanel(int score) {
-		switchPanel(new GameOverPanel());
+		switchPanel(new GameOverPanel(this, score));
 	}
 }

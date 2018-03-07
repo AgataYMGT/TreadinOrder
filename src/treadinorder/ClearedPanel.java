@@ -33,6 +33,7 @@ public class ClearedPanel extends JFXPanel implements Runnable {
 	public ClearedPanel(MainPanel mPanel, int difficulty, int score, long showTime) {
 		this.mPanel = mPanel;
 		this.difficulty = difficulty;
+		this.score = score;
 		this.showTime = showTime;
 		
 		// BoxLayoutに設定
