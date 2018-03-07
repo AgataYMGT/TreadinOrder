@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import treadinorder.eventlistener.ACPListener;
 import treadinorder.eventlistener.ACPToTitleLabelListener;
 
 public class AllClearedPanel extends JFXPanel {
@@ -48,6 +49,9 @@ public class AllClearedPanel extends JFXPanel {
 		
 		// リスナーをコンポーネントに追加
 		toTitleLabel.addMouseListener(new ACPToTitleLabelListener(mPanel, toTitleLabel));
+		ACPListener acpListener = new ACPListener(mPanel, this);
+		addAncestorListener(acpListener);
+		addKeyListener(acpListener);
 		
 		// コンポーネントをパネルに追加
 		add(Box.createVerticalGlue());
