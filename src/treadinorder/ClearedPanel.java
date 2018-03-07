@@ -4,13 +4,20 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.net.URISyntaxException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-public class ClearedPanel extends JPanel implements Runnable {
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+public class ClearedPanel extends JFXPanel implements Runnable {
+	// クラス変数
+	public static final String CLEARED_SOUND_PATH = "assets/sounds/cleared.mp3";
+	
 	// インスタンス変数
 	private MainPanel mPanel;
 	
@@ -71,6 +78,10 @@ public class ClearedPanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		// クリアサウンドを再生する
+		Media media = new Media(getClass().getResource(CLEARED_SOUND_PATH).toString());
+		MediaPlayer player = new MediaPlayer(media);
+		player.play();
 		try {
 			Thread.sleep(showTime);	// 指定された時間待機
 		} catch (InterruptedException e) {
