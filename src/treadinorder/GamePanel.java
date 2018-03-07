@@ -196,11 +196,11 @@ public class GamePanel extends JPanel implements Runnable {
 		} else {
 			// クリアすると次の難易度に変更
 			if(difficulty == EASY) {
-				mPanel.switchClearedLabel(LevelShowPanel.NORMAL, score);
+				mPanel.switchClearedPanel(LevelShowPanel.NORMAL, score);
 			} else if(difficulty == NORMAL) {
-				mPanel.switchClearedLabel(LevelShowPanel.HARD, score);
+				mPanel.switchClearedPanel(LevelShowPanel.HARD, score);
 			} else if(difficulty == HARD) {
-				mPanel.switchClearedLabel(LevelShowPanel.VERY_HARD, score);
+				mPanel.switchClearedPanel(LevelShowPanel.VERY_HARD, score);
 			} else {
 				System.exit(1);
 			}
