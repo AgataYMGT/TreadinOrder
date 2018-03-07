@@ -4,16 +4,23 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import treadinorder.eventlistener.GOPListener;
 import treadinorder.eventlistener.ToTitleLabelListener;
 
 public class GameOverPanel extends JFXPanel {
+	// クラス変数
+	// 爆発音の相対パス
+	public static final String BOMBSOUND_PATH = "bin/treadinorder/assets/sounds/bomb.mp3";
+	
 	// インスタンス変数
 	private JLabel gameOverLabel;	// ゲームオーバーラベル
 	private JLabel scoreLabel;		// スコアラベル
@@ -59,6 +66,11 @@ public class GameOverPanel extends JFXPanel {
 		add(Box.createVerticalStrut(mPanel.getHeight() / 10));
 		add(toTitleLabel);
 		add(Box.createVerticalGlue());
+		
+		// 爆発音を再生
+		Media media = new Media(new File(BOMBSOUND_PATH).toURI().toString());
+		MediaPlayer player = new MediaPlayer(media);
+		player.play();
 	}
 	
 	@Override

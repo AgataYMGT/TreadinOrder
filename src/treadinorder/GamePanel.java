@@ -1,9 +1,9 @@
 package treadinorder;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -11,6 +11,9 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import treadinorder.eventlistener.GPAncestorListener;
 import treadinorder.eventlistener.GPKeyListener;
 import treadinorder.gamepanel.GamePlayPanel;
@@ -18,8 +21,11 @@ import treadinorder.gamepanel.GamePlayPanel;
 import static treadinorder.TOUtils.horizonalCentering;
 import static treadinorder.TOUtils.verticalCentering;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JFXPanel implements Runnable {
 	// クラス変数
+	// ダミーパネルを踏むサウンドの相対パス
+	public static final String DUMMYPANEL_SOUND = "bin/treadinorder/assets/sounds/switchon.mp3";
+	
 	// 難易度に対する一辺の長さ
 	public static final int EASY = 5;
 	public static final int NORMAL = 7;
@@ -192,6 +198,17 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// ゲームオーバーならパネルを切り替える
 		if( playPanel.isGameOver() ) {
+			// スイッチ音を再生
+			Media media = new Media(new File(DUMMYPANEL_SOUND).toURI().toString());
+			MediaPlayer player = new MediaPlayer(media);
+			player.play();
+			
+			try {
+				Thread.sleep(500L);		// 500ms待機
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			mPanel.switchGameOverPanel(score);
 		} else {
 			// クリアすると次の難易度に変更
