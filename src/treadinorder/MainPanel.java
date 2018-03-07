@@ -15,9 +15,6 @@ public class MainPanel extends JPanel {
 	// クラス変数	
 	public static final String GEN_FONTNAME = "IPAフォント";	// デフォルトフォント
 	
-	// パネル
-	private StartPanel sPanel;
-	
 	public MainPanel(Dimension panelSize) {
 		this.setSize(panelSize);
 		
@@ -43,7 +40,7 @@ public class MainPanel extends JPanel {
 	 * スタートパネルに切り替える
 	 */
 	public void switchStartPanel() {
-		switchPanel(sPanel);
+		switchPanel(new StartPanel(this));
 	}
 	
 	/**
@@ -63,6 +60,25 @@ public class MainPanel extends JPanel {
 	 */
 	public void switchGamePanel(int oneSide, int score) {
 		switchPanel(new GamePanel(this, oneSide, score));
+	}
+	
+	/**
+	 * クリアパネルに切り替える
+	 * 難易度はLevelShowPanelのクラス変数より選択する
+	 * @param difficulty	難易度
+	 * @param score			スコア
+	 */
+	public void switchClearedPanel(int difficulty, int score) {
+		long showTime = 2000L;
+		switchPanel(new ClearedPanel(this, difficulty, score, showTime));
+	}
+	
+	/**
+	 * オールクリアパネルに切り替える
+	 * @param score	スコア
+	 */
+	public void switchAllClearedPanel(int score) {
+		switchPanel(new AllClearedPanel(this, score));
 	}
 	
 	/**
