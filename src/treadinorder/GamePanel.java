@@ -6,11 +6,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
@@ -51,9 +49,6 @@ public class GamePanel extends JFXPanel implements Runnable {
 	public static final int[] DOWN = {0, 1};
 	public static final int[] RIGHT = {1, 0};
 	public static final int[][] VECTOR = {UP, LEFT, DOWN, RIGHT};
-	
-	// インスタンス変数
-	private Random random = new Random();	// ランダムクラス
 	
 	// コンポーネント
 	private MainPanel mPanel;			// メインパネル

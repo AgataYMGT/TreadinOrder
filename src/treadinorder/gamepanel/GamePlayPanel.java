@@ -37,13 +37,8 @@ public class GamePlayPanel extends JFXPanel {
 	public static final String TILE_TREADSOUND_PATH = "bin/treadinorder/assets/sounds/tread.mp3";
 	
 	// インスタンス変数
-	private MainPanel mPanel;	// メインパネル
-	private GamePanel gPanel;	// ゲームパネル
-	
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
-	
-	private int difficulty;		// 難易度
 	
 	private List<Integer> nowTread = new ArrayList<Integer>();			// 今踏んでいるタイル
 	private int lastTrod;															// 最後に踏んだタイル
@@ -78,10 +73,6 @@ public class GamePlayPanel extends JFXPanel {
 	private MediaPlayer player = new MediaPlayer(new Media(new File(TILE_TREADSOUND_PATH).toURI().toString()));
 	
 	public GamePlayPanel(GamePanel gPanel, MainPanel mPanel, int difficulty) {
-		this.mPanel = mPanel;
-		this.gPanel = gPanel;
-		this.difficulty = difficulty;
-		
 		// 指定する順番のワンセットをランダムに取得
 		oneset = random.nextInt(Tiles.values().length - 2) + 3;
 		

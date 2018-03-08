@@ -1,7 +1,3 @@
-/**
- * 各パネル制御用のメインパネル
- */
-
 package treadinorder;
 
 import java.awt.Dimension;
