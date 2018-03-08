@@ -7,7 +7,6 @@ package treadinorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -28,8 +27,7 @@ public class StartPanel extends JPanel {
 	private JLabel logo;				// ロゴ画像
 	private JLabel[] tileImage;		// タイル画像
 	
-	// フォントとラベル
-	private Font genFont;				// 全般のフォント
+	// ラベル
 	private JLabel descriLabel;		// 説明ラベル
 	private JLabel beginLabel;		// ゲームスタートラベル
 	
@@ -54,20 +52,17 @@ public class StartPanel extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		// 全体フォントの設定
-		genFont = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, 48);
 				
 		// 説明ラベルの設定
 		descriLabel = new JLabel("<html>制限時間内に指示された<br>順番でタイルの上を歩け!</html>");
-		descriLabel.setFont(genFont);
+		descriLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(getHeight() * 4 / 100));
 		descriLabel.setForeground(new Color(0xbd0d0d));
 		descriLabel.setSize(descriLabel.getPreferredSize());
 		descriLabel.setHorizontalAlignment(JLabel.CENTER);
 		
 		// ゲームスタートラベルの設定
 		beginLabel = new JLabel("ゲームスタート（Spaceキー）");
-		beginLabel.setFont(genFont);
+		beginLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(getHeight() * 4 / 100));
 		beginLabel.setSize(beginLabel.getPreferredSize());
 		beginLabel.setHorizontalAlignment(JLabel.CENTER);
 		

@@ -9,7 +9,8 @@ import javax.swing.JPanel;
 
 public class MainPanel extends JPanel {
 	// クラス変数	
-	public static final String GEN_FONTNAME = "IPAフォント";	// デフォルトフォント
+	// デフォルトフォント
+	public static final Font DEFAULT_FONT = new Font("IPAフォント", Font.PLAIN, 84);
 	// テロップフォントの相対パス
 	public static final String TELOPFONT_PATH = TreadinOrder.ASSETS_PATH + "fonts/LibreBaskerville-Regular.ttf";
 	
@@ -48,7 +49,7 @@ public class MainPanel extends JPanel {
 	 */
 	public void switchLevelShowPanel(int difficulty, int score) {
 		int countDown = 6;
-		switchPanel(new LevelShowPanel(this, new Font(GEN_FONTNAME, Font.PLAIN, 84), difficulty, countDown, score));
+		switchPanel(new LevelShowPanel(this, DEFAULT_FONT, difficulty, countDown, score));
 	}
 	
 	/**

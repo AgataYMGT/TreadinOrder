@@ -43,8 +43,6 @@ public class ClearedPanel extends JFXPanel implements Runnable {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// デフォルトフォントを作成
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
 		// テロップフォントを作成
 		Font telopFont = null;
 		try {
@@ -62,7 +60,7 @@ public class ClearedPanel extends JFXPanel implements Runnable {
 		
 		// スコアラベルを設定
 		scoreLabel = new JLabel("現在のスコア：　" + score);
-		scoreLabel.setFont(font);
+		scoreLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
 		scoreLabel.setSize(scoreLabel.getPreferredSize());
 		scoreLabel.setAlignmentX(CENTER_ALIGNMENT);
 		

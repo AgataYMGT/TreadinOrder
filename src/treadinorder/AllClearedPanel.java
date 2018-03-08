@@ -28,8 +28,6 @@ public class AllClearedPanel extends JFXPanel {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// デフォルトフォントを作成
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
 		// テロップフォントを作成
 		Font telopFont = null;
 		try {
@@ -47,13 +45,13 @@ public class AllClearedPanel extends JFXPanel {
 		
 		// スコアラベルを設定
 		scoreLabel = new JLabel("スコア：　" + score);
-		scoreLabel.setFont(font);
+		scoreLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
 		scoreLabel.setSize(scoreLabel.getPreferredSize());
 		scoreLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
 		// タイトルへ戻るラベルを設定
 		toTitleLabel = new JLabel("タイトル画面へ戻る（Spaceキー）");
-		toTitleLabel.setFont(font.deriveFont(Font.PLAIN, mPanel.getHeight() * 7 / 100));
+		toTitleLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
 		toTitleLabel.setSize(scoreLabel.getPreferredSize());
 		toTitleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		

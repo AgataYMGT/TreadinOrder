@@ -112,12 +112,12 @@ public class GamePanel extends JFXPanel implements Runnable {
 		
 		// 指示矢印ラベルを設定
 		leadNextTileLabel = new JLabel("→");
-		leadNextTileLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, onesetTileSize));
+		leadNextTileLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(onesetTileSize));
 		
 		// コンポーネントサイズを設定
 		playPanel.setSize(playPanel.getPreferredSize());
 		onesetBox.setSize(onesetBox.getPreferredSize());
-		leadNextTileLabel.setSize(onesetTileSize, onesetTileSize);
+		leadNextTileLabel.setSize(onesetTileSize - 40, onesetTileSize);
 		
 		// コンポーネント位置を設定
 		playPanel.setLocation(horizonalCentering(this.getWidth(), playPanel.getWidth()), verticalCentering(this.getHeight(), playPanel.getHeight()));
