@@ -2,9 +2,11 @@ package treadinorder;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,12 +32,19 @@ public class GameOverPanel extends JFXPanel {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
-		// 共通設定
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 8 / 100);
+		// デフォルトフォントを作成
+		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
+		// テロップフォントを作成
+		Font telopFont = null;
+		try {
+			telopFont = Font.createFont(Font.TRUETYPE_FONT, new File(MainPanel.TELOPFONT_PATH));
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
 		
 		// ゲームオーバーラベルを設定
 		gameOverLabel = new JLabel("YOU DIED");
-		gameOverLabel.setFont(font);
+		gameOverLabel.setFont(telopFont.deriveFont(Font.PLAIN, mPanel.getHeight() * 8 / 100));
 		gameOverLabel.setSize(gameOverLabel.getPreferredSize());
 		gameOverLabel.setForeground(new Color(0xBB0206));		// 暗い赤
 		gameOverLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -48,7 +57,7 @@ public class GameOverPanel extends JFXPanel {
 		
 		// タイトルへ戻るラベルを設定
 		toTitleLabel = new JLabel("タイトル画面へ戻る（Spaceキー）");
-		toTitleLabel.setFont(font);
+		toTitleLabel.setFont(font.deriveFont(Font.PLAIN, mPanel.getHeight() * 7 / 100));
 		toTitleLabel.setSize(toTitleLabel.getPreferredSize());
 		toTitleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -61,7 +70,7 @@ public class GameOverPanel extends JFXPanel {
 		// コンポーネントをパネルに追加
 		add(Box.createVerticalGlue());
 		add(gameOverLabel);
-		add(Box.createVerticalStrut(mPanel.getHeight() * 8 / 100));
+		add(Box.createVerticalStrut(mPanel.getHeight() * 5 / 100));
 		add(scoreLabel);
 		add(Box.createVerticalStrut(mPanel.getHeight() / 10));
 		add(toTitleLabel);

@@ -2,8 +2,11 @@ package treadinorder;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,12 +42,19 @@ public class ClearedPanel extends JFXPanel implements Runnable {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// 共通設定
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.BOLD, mPanel.getHeight() * 8 / 100);
+		// デフォルトフォントを作成
+		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
+		// テロップフォントを作成
+		Font telopFont = null;
+		try {
+			telopFont = Font.createFont(Font.TRUETYPE_FONT, new File(MainPanel.TELOPFONT_PATH));
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
 		
 		 // クリアラベルを設定
 		clearedLabel = new JLabel("YOU CLEARED!");
-		clearedLabel.setFont(font);
+		clearedLabel.setFont(telopFont.deriveFont(Font.PLAIN, mPanel.getHeight() * 8 / 100));
 		clearedLabel.setForeground(new Color(0xE0D77F));
 		clearedLabel.setSize(clearedLabel.getPreferredSize());
 		clearedLabel.setAlignmentX(CENTER_ALIGNMENT);

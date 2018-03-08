@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 public class MainPanel extends JPanel {
 	// クラス変数	
 	public static final String GEN_FONTNAME = "IPAフォント";	// デフォルトフォント
+	// テロップフォントの相対パス
+	public static final String TELOPFONT_PATH = "bin/treadinorder/assets/fonts/LibreBaskerville-Regular.ttf";
 	
 	public MainPanel(Dimension panelSize) {
 		this.setSize(panelSize);
