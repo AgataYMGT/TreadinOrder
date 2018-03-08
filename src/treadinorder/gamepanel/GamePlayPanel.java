@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,19 +18,23 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import treadinorder.GamePanel;
 import treadinorder.MainPanel;
 import treadinorder.TOUtils;
 import treadinorder.TreadinOrder.Tiles;
 
-public class GamePlayPanel extends JPanel {
+public class GamePlayPanel extends JFXPanel {
 	// クラス変数
 	// プレイヤー画像の相対パス
 	public static final String PLAYERIMAGE_PATH = "../assets/player.png";
 	// ゴール画像の相対パス
 	public static final String GOALIMAGE_PATH = "../assets/goal.png";
+	// タイルを踏んだ時のサウンドの相対パス
+	public static final String TILE_TREADSOUND_PATH = "bin/treadinorder/assets/sounds/tread.mp3";
 	
 	// インスタンス変数
 	private MainPanel mPanel;	// メインパネル
@@ -52,6 +57,8 @@ public class GamePlayPanel extends JPanel {
 	private Image[] scaledTileImages;	// スケールされたタイル画像配列
 	private Image[][] mapTiles;			// 迷路マップの画像版
 	
+	private int lastEverTrodTiles;		// 今までに踏んだタイルの数の比較用変数
+	
 	private int playerWidth, playerHeight;	// プレイヤーの大きさ
 	private int playerX, playerY;				// プレイヤーの座標
 	
@@ -65,6 +72,9 @@ public class GamePlayPanel extends JPanel {
 	private boolean isGameOver;	// ゲームオーバーフラグ
 
 	private final Random random = new Random();	// ランダムクラス
+	
+	// タイルを踏む音のメディアプレイヤー
+	private MediaPlayer player = new MediaPlayer(new Media(new File(TILE_TREADSOUND_PATH).toURI().toString()));
 	
 	public GamePlayPanel(GamePanel gPanel, MainPanel mPanel, int difficulty) {
 		this.mPanel = mPanel;
@@ -165,6 +175,8 @@ public class GamePlayPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
+		int everTrodTiles = 0;			// 今までに踏んだタイルの数
+		
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[i].length; j++) {
 				// タイルを描画する
@@ -176,14 +188,23 @@ public class GamePlayPanel extends JPanel {
 					nowTread.add(map[i][j]);
 				}
 				
-				// 踏まれているタイルは黒く描画する
 				if(trodTiles[i][j] == 1) {
+					everTrodTiles++;	// 踏んだタイルの数を数える
+					
+					// 踏まれているタイルは黒く描画する
 					g2.setColor(new Color(0, 0, 0, 200));
 					g2.fillRect(tileDrawsize * j, topBottomSpace + tileDrawsize * i, tileDrawsize, tileDrawsize);
 				}
 			}
 		}
 		if( isTrod(0, topBottomSpace + mapSize, mapSize, topBottomSpace) ) nowTread.add(oneset - 1);
+		
+		// 前回より１つ踏んだタイルが増えていると踏んだ音を流す
+		if(everTrodTiles == lastEverTrodTiles + 1) {
+			player.stop();
+			player.play();
+		}
+		lastEverTrodTiles = everTrodTiles;
 		
 		// 踏んでいるタイルの数
 		switch(nowTread.size()) {
