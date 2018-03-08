@@ -1,5 +1,6 @@
 package treadinorder;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -58,6 +59,7 @@ public class GamePanel extends JFXPanel implements Runnable {
 	private MainPanel mPanel;			// メインパネル
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
+	private JLabel leadNextTileLabel;	// 次の踏むタイルを指示する矢印ラベル
 	
 	private Image[] tileImages;		// タイル画像の配列
 	
@@ -112,11 +114,16 @@ public class GamePanel extends JFXPanel implements Runnable {
 				e.printStackTrace();
 			}
 		}
-			
+		
+		// 指示矢印ラベルを設定
+		leadNextTileLabel = new JLabel("→");
+		leadNextTileLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, onesetTileSize));
+		
 		// コンポーネントサイズを設定
 		playPanel.setSize(playPanel.getPreferredSize());
 		onesetBox.setSize(onesetBox.getPreferredSize());
-			
+		leadNextTileLabel.setSize(onesetTileSize, onesetTileSize);
+		
 		// コンポーネント位置を設定
 		playPanel.setLocation(horizonalCentering(this.getWidth(), playPanel.getWidth()), verticalCentering(this.getHeight(), playPanel.getHeight()));
 			
@@ -141,6 +148,7 @@ public class GamePanel extends JFXPanel implements Runnable {
 		// コンポーネントをこのパネルに追加
 		this.add(playPanel);
 		this.add(onesetBox);
+		this.add(leadNextTileLabel);
 			
 		th = new Thread(this);
 		th.start();
@@ -174,6 +182,10 @@ public class GamePanel extends JFXPanel implements Runnable {
 			if(playPanelY + relPlayerLoc.y + playerHeight > playPanelHeight) {
 				playPanel.movePlayer(playerSpeed, UP[0], UP[1]);
 			}
+			
+			// 次に踏むタイル番号から指示矢印の位置を設定する
+			int leadNextTileLabelY = onesetBox.getY() + onesetBox.getHeight() - leadNextTileLabel.getHeight() * (playPanel.getNextTreadTileNum() + 1);
+			leadNextTileLabel.setLocation(onesetBox.getX() - leadNextTileLabel.getWidth(), leadNextTileLabelY);
 			
 			playPanel.repaint();
 			

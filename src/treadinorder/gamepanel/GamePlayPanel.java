@@ -58,6 +58,7 @@ public class GamePlayPanel extends JFXPanel {
 	private Image[][] mapTiles;			// 迷路マップの画像版
 	
 	private int lastEverTrodTiles;		// 今までに踏んだタイルの数の比較用変数
+	private int nextTreadTile;			// 次に踏むべきタイルの番号
 	
 	private int playerWidth, playerHeight;	// プレイヤーの大きさ
 	private int playerX, playerY;				// プレイヤーの座標
@@ -150,6 +151,8 @@ public class GamePlayPanel extends JFXPanel {
 		
 		// 直前に踏んだタイルを初期化
 		lastTrod = oneset - 1;
+		// 次に踏むべきタイル番号を初期化
+		nextTreadTile = 0;
 		
 		// ゴール画像を読み込む
 		try {
@@ -230,6 +233,8 @@ public class GamePlayPanel extends JFXPanel {
 			// 直前に踏んだタイルと連番になっていなければゲームオーバー
 			if(!(newTread == lastTrod + 1  ||  newTread == 0 && lastTrod == oneset - 1)) {
 				isGameOver = true;
+			} else {
+				nextTreadTile = (newTread == oneset - 1) ? 0 : newTread + 1;
 			}
 			break;
 		}
@@ -300,6 +305,14 @@ public class GamePlayPanel extends JFXPanel {
 	 */
 	public int getTileDrawsize() {
 		return tileDrawsize;
+	}
+	
+	/**
+	 * 次に踏むべきタイルの番号を返す
+	 * @return 次に踏むべきタイルの番号
+	 */
+	public int getNextTreadTileNum() {
+		return nextTreadTile;
 	}
 	
 	/**
