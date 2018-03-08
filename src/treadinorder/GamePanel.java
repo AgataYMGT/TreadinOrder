@@ -263,7 +263,7 @@ public class GamePanel extends JFXPanel implements Runnable {
 		}
 	}
 	
-	public JPanel getPlayPanel() {
+	public GamePlayPanel getPlayPanel() {
 		return playPanel;
 	}
 }
