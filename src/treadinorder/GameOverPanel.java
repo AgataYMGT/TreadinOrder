@@ -21,7 +21,7 @@ import treadinorder.eventlistener.ToTitleLabelListener;
 public class GameOverPanel extends JFXPanel {
 	// クラス変数
 	// 爆発音の相対パス
-	public static final String BOMBSOUND_PATH = "bin/treadinorder/assets/sounds/bomb.mp3";
+	public static final String BOMBSOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/bomb.mp3";
 	
 	// インスタンス変数
 	private JLabel gameOverLabel;	// ゲームオーバーラベル

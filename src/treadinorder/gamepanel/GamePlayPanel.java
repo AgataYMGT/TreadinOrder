@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,16 +24,17 @@ import javafx.scene.media.MediaPlayer;
 import treadinorder.GamePanel;
 import treadinorder.MainPanel;
 import treadinorder.TOUtils;
+import treadinorder.TreadinOrder;
 import treadinorder.TreadinOrder.Tiles;
 
 public class GamePlayPanel extends JFXPanel {
 	// クラス変数
 	// プレイヤー画像の相対パス
-	public static final String PLAYERIMAGE_PATH = "../assets/player.png";
+	public static final String PLAYERIMAGE_PATH = TreadinOrder.ASSETS_PATH + "player.png";
 	// ゴール画像の相対パス
-	public static final String GOALIMAGE_PATH = "../assets/goal.png";
+	public static final String GOALIMAGE_PATH = TreadinOrder.ASSETS_PATH + "goal.png";
 	// タイルを踏んだ時のサウンドの相対パス
-	public static final String TILE_TREADSOUND_PATH = "bin/treadinorder/assets/sounds/tread.mp3";
+	public static final String TILE_TREADSOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/tread.mp3";
 	
 	// インスタンス変数
 	private int[][] map;			// 迷路マップ
@@ -98,9 +98,8 @@ public class GamePlayPanel extends JFXPanel {
 		
 		scaledTileImages = new Image[oneset];
 		for(int i = 0; i < oneset; i++) {
-			URL imgpath = getClass().getResource("../assets/" + tiles.get(i).name() + ".png");
 			try {
-				BufferedImage image = ImageIO.read(imgpath);
+				BufferedImage image = ImageIO.read(new File(TreadinOrder.ASSETS_PATH + tiles.get(i).name() + ".png"));
 				scaledTileImages[i] = image.getScaledInstance(tileDrawsize, tileDrawsize, Image.SCALE_AREA_AVERAGING);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -120,7 +119,7 @@ public class GamePlayPanel extends JFXPanel {
 		
 		// プレイヤー画像を読み込む
 		try {
-			BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
+			BufferedImage playerImage = ImageIO.read(new File(PLAYERIMAGE_PATH));
 			
 			// プレイヤーの大きさを設定
 			double drawRatio = 0.8;	// タイルに対する描画比率
@@ -147,7 +146,7 @@ public class GamePlayPanel extends JFXPanel {
 		
 		// ゴール画像を読み込む
 		try {
-			BufferedImage goalImage = ImageIO.read(getClass().getResource(GOALIMAGE_PATH));
+			BufferedImage goalImage = ImageIO.read(new File(GOALIMAGE_PATH));
 			
 			goalWidth = goalImage.getWidth() * topBottomSpace / goalImage.getHeight();
 			goalHeight = topBottomSpace;

@@ -23,7 +23,7 @@ import static treadinorder.TOUtils.verticalCentering;
 public class GamePanel extends JFXPanel implements Runnable {
 	// クラス変数
 	// ダミーパネルを踏むサウンドの相対パス
-	public static final String DUMMYPANEL_SOUND = "bin/treadinorder/assets/sounds/switchon.mp3";
+	public static final String DUMMYPANEL_SOUND = TreadinOrder.ASSETS_PATH + "sounds/switchon.mp3";
 	
 	// 難易度に対する一辺の長さ
 	public static final int EASY = 5;

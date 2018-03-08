@@ -6,9 +6,13 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JFrame;
 
 public class TreadinOrder extends JFrame {
+	// クラス変数
 	public static enum Tiles {
 		debian, ubuntu, linuxmint, redhat, fedora, centos
 	};
+	
+	// ゲーム素材フォルダの相対パス
+	public static final String ASSETS_PATH = "bin/treadinorder/assets/";
 	
 	public TreadinOrder() {
 		// タイトルを設定

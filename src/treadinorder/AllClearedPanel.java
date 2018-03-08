@@ -73,7 +73,7 @@ public class AllClearedPanel extends JFXPanel {
 		add(Box.createVerticalGlue());
 		
 		// クリアサウンドを再生
-		Media media = new Media(getClass().getResource(ClearedPanel.CLEARED_SOUND_PATH).toString());
+		Media media = new Media(new File(ClearedPanel.CLEARED_SOUND_PATH).toURI().toString());
 		MediaPlayer player = new MediaPlayer(media);
 		player.play();
 	}
