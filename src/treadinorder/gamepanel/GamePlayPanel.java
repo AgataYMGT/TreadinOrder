@@ -51,14 +51,13 @@ public class GamePlayPanel extends JFXPanel {
 	
 	private Image[] scaledTileImages;	// スケールされたタイル画像配列
 	private Image[][] mapTiles;			// 迷路マップの画像版
+	private Image playerImage;			// プレイヤーの画像
 	
 	private int lastEverTrodTiles;		// 今までに踏んだタイルの数の比較用変数
 	private int nextTreadTile;			// 次に踏むべきタイルの番号
 	
 	private int playerWidth, playerHeight;	// プレイヤーの大きさ
 	private int playerX, playerY;				// プレイヤーの座標
-	
-	private Image playerImage;	// プレイヤーの画像
 	
 	private int goalWidth, goalHeight;		// ゴール画像の大きさ
 	private int goalX, goalY;				// ゴールの座標

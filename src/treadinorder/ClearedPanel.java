@@ -22,7 +22,7 @@ public class ClearedPanel extends JFXPanel implements Runnable {
 	public static final String CLEARED_SOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/cleared.mp3";
 	
 	// インスタンス変数
-	private MainPanel mPanel;
+	private MainPanel mPanel;		// メインパネル
 	
 	private JLabel clearedLabel;	// クリアラベル
 	private JLabel scoreLabel;		// スコアラベル

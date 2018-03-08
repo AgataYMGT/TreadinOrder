@@ -49,7 +49,6 @@ public class GamePanel extends JFXPanel implements Runnable {
 	public static final int[] RIGHT = {1, 0};
 	public static final int[][] VECTOR = {UP, LEFT, DOWN, RIGHT};
 	
-	// コンポーネント
 	private MainPanel mPanel;			// メインパネル
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
@@ -61,7 +60,6 @@ public class GamePanel extends JFXPanel implements Runnable {
 	private int difficulty;		// 難易度
 	private int tileDrawsize;	// タイルの描画サイズ
 	
-	// 壁
 	private int wallWidth, wallHeight;		// 壁の大きさ
 	private int leftWallX, leftWallY;		// 左の壁の座標
 	private int rightWallX, rightWallY;	// 右の壁の座標
@@ -78,9 +76,9 @@ public class GamePanel extends JFXPanel implements Runnable {
 		this.score = score;
 		
 		// パネルサイズを設定
-		this.setSize(mPanel.getSize());
+		setSize(mPanel.getSize());
 		// レイアウトマネージャーを停止
-		this.setLayout(null);
+		setLayout(null);
 		
 		// 難易度を設定
 		difficulty = oneSide;
@@ -135,15 +133,15 @@ public class GamePanel extends JFXPanel implements Runnable {
 		onesetBox.setLocation(onesetBoxX, onesetBoxY);
 			
 		// リスナーを追加
-		this.addKeyListener(new GPKeyListener(this));
-		// パネルが可視/不可視になると呼ばれるリスナー
-		this.addAncestorListener(new GPAncestorListener(this));
+		addKeyListener(new GPKeyListener(this));
+		addAncestorListener(new GPAncestorListener(this));
 			
 		// コンポーネントをこのパネルに追加
-		this.add(playPanel);
-		this.add(onesetBox);
-		this.add(leadNextTileLabel);
-			
+		add(playPanel);
+		add(onesetBox);
+		add(leadNextTileLabel);
+		
+		// スレッドを開始
 		th = new Thread(this);
 		th.start();
 	}
@@ -238,10 +236,20 @@ public class GamePanel extends JFXPanel implements Runnable {
 		g.fillRect(rightWallX, rightWallY, wallWidth, wallHeight);
 	}
 	
+	/**
+	 * そのキーの押下フラグを立てる
+	 * キーコードはこのクラスのクラス変数より選択する
+	 * @param key	キー
+	 */
 	public void setPressedKey(int key) {
 		pressedCrossKey[key] = true;
 	}
 	
+	/**
+	 * そのキーの押下フラグを倒す
+	 * キーコードはこのクラスのクラス変数より選択する
+	 * @param key	キー
+	 */
 	public void setReleasedKey(int key) {
 		pressedCrossKey[key] = false;
 	}
@@ -269,6 +277,10 @@ public class GamePanel extends JFXPanel implements Runnable {
 		}
 	}
 	
+	/**
+	 * ゲームプレイパネルを返す
+	 * @return ゲームプレイパネル
+	 */
 	public GamePlayPanel getPlayPanel() {
 		return playPanel;
 	}
