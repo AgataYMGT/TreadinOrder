@@ -2,8 +2,11 @@ package treadinorder;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,12 +28,19 @@ public class AllClearedPanel extends JFXPanel {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// 共通設定
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.BOLD, mPanel.getHeight() * 8 / 100);
+		// デフォルトフォントを作成
+		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
+		// テロップフォントを作成
+		Font telopFont = null;
+		try {
+			telopFont = Font.createFont(Font.TRUETYPE_FONT, new File(MainPanel.TELOPFONT_PATH));
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
 		
 		 // クリアラベルを設定
 		clearedLabel = new JLabel("DUTY FULFILLED");
-		clearedLabel.setFont(font);
+		clearedLabel.setFont(telopFont.deriveFont(Font.PLAIN, mPanel.getHeight() * 8 / 100));
 		clearedLabel.setForeground(new Color(0xE0D77F));
 		clearedLabel.setSize(clearedLabel.getPreferredSize());
 		clearedLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -43,7 +53,7 @@ public class AllClearedPanel extends JFXPanel {
 		
 		// タイトルへ戻るラベルを設定
 		toTitleLabel = new JLabel("タイトル画面へ戻る（Spaceキー）");
-		toTitleLabel.setFont(font);
+		toTitleLabel.setFont(font.deriveFont(Font.PLAIN, mPanel.getHeight() * 7 / 100));
 		toTitleLabel.setSize(scoreLabel.getPreferredSize());
 		toTitleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -56,7 +66,7 @@ public class AllClearedPanel extends JFXPanel {
 		// コンポーネントをパネルに追加
 		add(Box.createVerticalGlue());
 		add(clearedLabel);
-		add(Box.createVerticalStrut(mPanel.getHeight() * 8 / 100));
+		add(Box.createVerticalStrut(mPanel.getHeight() * 5 / 100));
 		add(scoreLabel);
 		add(Box.createVerticalStrut(mPanel.getHeight() / 10));
 		add(toTitleLabel);
