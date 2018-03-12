@@ -3,6 +3,7 @@ package treadinorder.eventlistener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import treadinorder.LevelShowPanel;
 import treadinorder.MainPanel;
 
 public class SpKeyListener implements KeyListener {
@@ -14,9 +15,9 @@ public class SpKeyListener implements KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// Spaceキー(コード:32)が押下されたらステートを1に変更
-		if(e.getKeyCode() == 32) {
-			mPanel.setState(1);
+		// Spaceキーが押下されたらゲームを始める
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			mPanel.switchLevelShowPanel(LevelShowPanel.EASY, 0);
 		}
 	}
 

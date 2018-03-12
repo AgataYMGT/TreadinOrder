@@ -15,22 +15,18 @@ import javax.swing.JLabel;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import treadinorder.eventlistener.GOPListener;
-import treadinorder.eventlistener.ToTitleLabelListener;
+import treadinorder.eventlistener.ACPListener;
+import treadinorder.eventlistener.ACPToTitleLabelListener;
 
-public class GameOverPanel extends JFXPanel {
-	// クラス変数
-	// 爆発音の相対パス
-	public static final String BOMBSOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/bomb.mp3";
-	
+public class AllClearedPanel extends JFXPanel {
 	// インスタンス変数
-	private JLabel gameOverLabel;	// ゲームオーバーラベル
+	private JLabel clearedLabel;	// クリアラベル
 	private JLabel scoreLabel;		// スコアラベル
-	private JLabel toTitleLabel;	// タイトル画面に戻るラベル
+	private JLabel toTitleLabel;	// タイトル画面へ戻るラベル
 	
-	public GameOverPanel(MainPanel mPanel, int score) {
+	public AllClearedPanel(MainPanel mPanel, int score) {
 		// BoxLayoutに設定
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// テロップフォントを作成
 		Font telopFont = null;
@@ -40,42 +36,42 @@ public class GameOverPanel extends JFXPanel {
 			e.printStackTrace();
 		}
 		
-		// ゲームオーバーラベルを設定
-		gameOverLabel = new JLabel("YOU DIED");
-		gameOverLabel.setFont(telopFont.deriveFont(Font.PLAIN, mPanel.getHeight() * 8 / 100));
-		gameOverLabel.setSize(gameOverLabel.getPreferredSize());
-		gameOverLabel.setForeground(new Color(0xBB0206));		// 暗い赤
-		gameOverLabel.setAlignmentX(CENTER_ALIGNMENT);
+		 // クリアラベルを設定
+		clearedLabel = new JLabel("DUTY FULFILLED");
+		clearedLabel.setFont(telopFont.deriveFont(Font.PLAIN, mPanel.getHeight() * 8 / 100));
+		clearedLabel.setForeground(new Color(0xE0D77F));
+		clearedLabel.setSize(clearedLabel.getPreferredSize());
+		clearedLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
 		// スコアラベルを設定
 		scoreLabel = new JLabel("スコア：　" + score);
-		scoreLabel.setFont(MainPanel.DEFAULT_FONT);
+		scoreLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
 		scoreLabel.setSize(scoreLabel.getPreferredSize());
 		scoreLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
 		// タイトルへ戻るラベルを設定
 		toTitleLabel = new JLabel("タイトル画面へ戻る（Spaceキー）");
 		toTitleLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
-		toTitleLabel.setSize(toTitleLabel.getPreferredSize());
+		toTitleLabel.setSize(scoreLabel.getPreferredSize());
 		toTitleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
 		// リスナーをコンポーネントに追加
-		toTitleLabel.addMouseListener(new ToTitleLabelListener(mPanel, toTitleLabel));
-		GOPListener gopListener = new GOPListener(mPanel, this);
-		addKeyListener(gopListener);
-		addAncestorListener(gopListener);
+		toTitleLabel.addMouseListener(new ACPToTitleLabelListener(mPanel, toTitleLabel));
+		ACPListener acpListener = new ACPListener(mPanel, this);
+		addAncestorListener(acpListener);
+		addKeyListener(acpListener);
 		
 		// コンポーネントをパネルに追加
 		add(Box.createVerticalGlue());
-		add(gameOverLabel);
+		add(clearedLabel);
 		add(Box.createVerticalStrut(mPanel.getHeight() * 5 / 100));
 		add(scoreLabel);
 		add(Box.createVerticalStrut(mPanel.getHeight() / 10));
 		add(toTitleLabel);
 		add(Box.createVerticalGlue());
 		
-		// 爆発音を再生
-		Media media = new Media(new File(BOMBSOUND_PATH).toURI().toString());
+		// クリアサウンドを再生
+		Media media = new Media(new File(ClearedPanel.CLEARED_SOUND_PATH).toURI().toString());
 		MediaPlayer player = new MediaPlayer(media);
 		player.play();
 	}
@@ -85,7 +81,7 @@ public class GameOverPanel extends JFXPanel {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
-		// ゲームオーバーラベルの文字背景を黒く塗る
-		g2.fillRect(0, gameOverLabel.getY(), getWidth(), gameOverLabel.getHeight());
+		// 文字背景を黒く塗る
+		g2.fillRect(0, clearedLabel.getY(), getWidth(), clearedLabel.getHeight());
 	}
 }
