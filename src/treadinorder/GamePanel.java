@@ -49,6 +49,10 @@ public class GamePanel extends JFXPanel implements Runnable {
 	public static final int[] RIGHT = {1, 0};
 	public static final int[][] VECTOR = {UP, LEFT, DOWN, RIGHT};
 	
+	// スピード
+	public static final int EM_SPEED = 3;
+	public static final int HV_SPEED = 1;
+	
 	private MainPanel mPanel;			// メインパネル
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
@@ -152,7 +156,11 @@ public class GamePanel extends JFXPanel implements Runnable {
 			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
-					playPanel.movePlayer(2, VECTOR[i][0], VECTOR[i][1]);
+					if(difficulty == EASY || difficulty == NORMAL) {
+						playPanel.movePlayer(EM_SPEED, VECTOR[i][0], VECTOR[i][1]);
+					} else {
+						playPanel.movePlayer(HV_SPEED, VECTOR[i][0], VECTOR[i][1]);
+					}
 				}
 			}
 			
