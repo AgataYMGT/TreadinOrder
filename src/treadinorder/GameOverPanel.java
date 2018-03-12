@@ -21,7 +21,7 @@ import treadinorder.eventlistener.ToTitleLabelListener;
 public class GameOverPanel extends JFXPanel {
 	// クラス変数
 	// 爆発音の相対パス
-	public static final String BOMBSOUND_PATH = "bin/treadinorder/assets/sounds/bomb.mp3";
+	public static final String BOMBSOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/bomb.mp3";
 	
 	// インスタンス変数
 	private JLabel gameOverLabel;	// ゲームオーバーラベル
@@ -32,8 +32,6 @@ public class GameOverPanel extends JFXPanel {
 		// BoxLayoutに設定
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
-		// デフォルトフォントを作成
-		Font font = new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, mPanel.getHeight() * 7 / 100);
 		// テロップフォントを作成
 		Font telopFont = null;
 		try {
@@ -51,13 +49,13 @@ public class GameOverPanel extends JFXPanel {
 		
 		// スコアラベルを設定
 		scoreLabel = new JLabel("スコア：　" + score);
-		scoreLabel.setFont(font);
+		scoreLabel.setFont(MainPanel.DEFAULT_FONT);
 		scoreLabel.setSize(scoreLabel.getPreferredSize());
 		scoreLabel.setAlignmentX(CENTER_ALIGNMENT);
 		
 		// タイトルへ戻るラベルを設定
 		toTitleLabel = new JLabel("タイトル画面へ戻る（Spaceキー）");
-		toTitleLabel.setFont(font.deriveFont(Font.PLAIN, mPanel.getHeight() * 7 / 100));
+		toTitleLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(mPanel.getHeight() * 7 / 100));
 		toTitleLabel.setSize(toTitleLabel.getPreferredSize());
 		toTitleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		

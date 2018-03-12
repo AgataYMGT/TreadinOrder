@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,25 +24,21 @@ import javafx.scene.media.MediaPlayer;
 import treadinorder.GamePanel;
 import treadinorder.MainPanel;
 import treadinorder.TOUtils;
+import treadinorder.TreadinOrder;
 import treadinorder.TreadinOrder.Tiles;
 
 public class GamePlayPanel extends JFXPanel {
 	// クラス変数
 	// プレイヤー画像の相対パス
-	public static final String PLAYERIMAGE_PATH = "../assets/player.png";
+	public static final String PLAYERIMAGE_PATH = TreadinOrder.ASSETS_PATH + "player.png";
 	// ゴール画像の相対パス
-	public static final String GOALIMAGE_PATH = "../assets/goal.png";
+	public static final String GOALIMAGE_PATH = TreadinOrder.ASSETS_PATH + "goal.png";
 	// タイルを踏んだ時のサウンドの相対パス
-	public static final String TILE_TREADSOUND_PATH = "bin/treadinorder/assets/sounds/tread.mp3";
+	public static final String TILE_TREADSOUND_PATH = TreadinOrder.ASSETS_PATH + "sounds/tread.mp3";
 	
 	// インスタンス変数
-	private MainPanel mPanel;	// メインパネル
-	private GamePanel gPanel;	// ゲームパネル
-	
 	private int[][] map;			// 迷路マップ
 	private int mapSize;			// マップの大きさ
-	
-	private int difficulty;		// 難易度
 	
 	private List<Integer> nowTread = new ArrayList<Integer>();			// 今踏んでいるタイル
 	private int lastTrod;															// 最後に踏んだタイル
@@ -56,14 +51,13 @@ public class GamePlayPanel extends JFXPanel {
 	
 	private Image[] scaledTileImages;	// スケールされたタイル画像配列
 	private Image[][] mapTiles;			// 迷路マップの画像版
+	private Image playerImage;			// プレイヤーの画像
 	
 	private int lastEverTrodTiles;		// 今までに踏んだタイルの数の比較用変数
 	private int nextTreadTile;			// 次に踏むべきタイルの番号
 	
 	private int playerWidth, playerHeight;	// プレイヤーの大きさ
 	private int playerX, playerY;				// プレイヤーの座標
-	
-	private Image playerImage;	// プレイヤーの画像
 	
 	private int goalWidth, goalHeight;		// ゴール画像の大きさ
 	private int goalX, goalY;				// ゴールの座標
@@ -78,10 +72,6 @@ public class GamePlayPanel extends JFXPanel {
 	private MediaPlayer player = new MediaPlayer(new Media(new File(TILE_TREADSOUND_PATH).toURI().toString()));
 	
 	public GamePlayPanel(GamePanel gPanel, MainPanel mPanel, int difficulty) {
-		this.mPanel = mPanel;
-		this.gPanel = gPanel;
-		this.difficulty = difficulty;
-		
 		// 指定する順番のワンセットをランダムに取得
 		oneset = random.nextInt(Tiles.values().length - 2) + 3;
 		
@@ -107,9 +97,8 @@ public class GamePlayPanel extends JFXPanel {
 		
 		scaledTileImages = new Image[oneset];
 		for(int i = 0; i < oneset; i++) {
-			URL imgpath = getClass().getResource("../assets/" + tiles.get(i).name() + ".png");
 			try {
-				BufferedImage image = ImageIO.read(imgpath);
+				BufferedImage image = ImageIO.read(new File(TreadinOrder.ASSETS_PATH + tiles.get(i).name() + ".png"));
 				scaledTileImages[i] = image.getScaledInstance(tileDrawsize, tileDrawsize, Image.SCALE_AREA_AVERAGING);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -129,7 +118,7 @@ public class GamePlayPanel extends JFXPanel {
 		
 		// プレイヤー画像を読み込む
 		try {
-			BufferedImage playerImage = ImageIO.read(getClass().getResource(PLAYERIMAGE_PATH));
+			BufferedImage playerImage = ImageIO.read(new File(PLAYERIMAGE_PATH));
 			
 			// プレイヤーの大きさを設定
 			double drawRatio = 0.8;	// タイルに対する描画比率
@@ -156,7 +145,7 @@ public class GamePlayPanel extends JFXPanel {
 		
 		// ゴール画像を読み込む
 		try {
-			BufferedImage goalImage = ImageIO.read(getClass().getResource(GOALIMAGE_PATH));
+			BufferedImage goalImage = ImageIO.read(new File(GOALIMAGE_PATH));
 			
 			goalWidth = goalImage.getWidth() * topBottomSpace / goalImage.getHeight();
 			goalHeight = topBottomSpace;

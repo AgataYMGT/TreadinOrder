@@ -1,16 +1,13 @@
 package treadinorder;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
@@ -25,7 +22,7 @@ import static treadinorder.TOUtils.verticalCentering;
 public class GamePanel extends JFXPanel implements Runnable {
 	// クラス変数
 	// ダミーパネルを踏むサウンドの相対パス
-	public static final String DUMMYPANEL_SOUND = "bin/treadinorder/assets/sounds/switchon.mp3";
+	public static final String DUMMYPANEL_SOUND = TreadinOrder.ASSETS_PATH + "sounds/switchon.mp3";
 	
 	// 難易度に対する一辺の長さ
 	public static final int EASY = 5;
@@ -52,10 +49,10 @@ public class GamePanel extends JFXPanel implements Runnable {
 	public static final int[] RIGHT = {1, 0};
 	public static final int[][] VECTOR = {UP, LEFT, DOWN, RIGHT};
 	
-	// インスタンス変数
-	private Random random = new Random();	// ランダムクラス
+	// スピード
+	public static final int EM_SPEED = 3;
+	public static final int HV_SPEED = 1;
 	
-	// コンポーネント
 	private MainPanel mPanel;			// メインパネル
 	private GamePlayPanel playPanel;	// 実際のゲームプレイ部分のパネル
 	private Box onesetBox;				//　指定される順番のワンセットボックス
@@ -67,7 +64,6 @@ public class GamePanel extends JFXPanel implements Runnable {
 	private int difficulty;		// 難易度
 	private int tileDrawsize;	// タイルの描画サイズ
 	
-	// 壁
 	private int wallWidth, wallHeight;		// 壁の大きさ
 	private int leftWallX, leftWallY;		// 左の壁の座標
 	private int rightWallX, rightWallY;	// 右の壁の座標
@@ -84,9 +80,9 @@ public class GamePanel extends JFXPanel implements Runnable {
 		this.score = score;
 		
 		// パネルサイズを設定
-		this.setSize(mPanel.getSize());
+		setSize(mPanel.getSize());
 		// レイアウトマネージャーを停止
-		this.setLayout(null);
+		setLayout(null);
 		
 		// 難易度を設定
 		difficulty = oneSide;
@@ -117,12 +113,12 @@ public class GamePanel extends JFXPanel implements Runnable {
 		
 		// 指示矢印ラベルを設定
 		leadNextTileLabel = new JLabel("→");
-		leadNextTileLabel.setFont(new Font(MainPanel.GEN_FONTNAME, Font.PLAIN, onesetTileSize));
+		leadNextTileLabel.setFont(MainPanel.DEFAULT_FONT.deriveFont(onesetTileSize));
 		
 		// コンポーネントサイズを設定
 		playPanel.setSize(playPanel.getPreferredSize());
 		onesetBox.setSize(onesetBox.getPreferredSize());
-		leadNextTileLabel.setSize(onesetTileSize, onesetTileSize);
+		leadNextTileLabel.setSize(onesetTileSize - 40, onesetTileSize);
 		
 		// コンポーネント位置を設定
 		playPanel.setLocation(horizonalCentering(this.getWidth(), playPanel.getWidth()), verticalCentering(this.getHeight(), playPanel.getHeight()));
@@ -141,15 +137,15 @@ public class GamePanel extends JFXPanel implements Runnable {
 		onesetBox.setLocation(onesetBoxX, onesetBoxY);
 			
 		// リスナーを追加
-		this.addKeyListener(new GPKeyListener(this));
-		// パネルが可視/不可視になると呼ばれるリスナー
-		this.addAncestorListener(new GPAncestorListener(this));
+		addKeyListener(new GPKeyListener(this));
+		addAncestorListener(new GPAncestorListener(this));
 			
 		// コンポーネントをこのパネルに追加
-		this.add(playPanel);
-		this.add(onesetBox);
-		this.add(leadNextTileLabel);
-			
+		add(playPanel);
+		add(onesetBox);
+		add(leadNextTileLabel);
+		
+		// スレッドを開始
 		th = new Thread(this);
 		th.start();
 	}
@@ -160,7 +156,11 @@ public class GamePanel extends JFXPanel implements Runnable {
 			// 十字キーが押下されていれば、その方向にプレイヤーを移動させる
 			for(int i = 0; i < pressedCrossKey.length; i++) {
 				if( pressedCrossKey[i] ) {
-					playPanel.movePlayer(2, VECTOR[i][0], VECTOR[i][1]);
+					if(difficulty == EASY || difficulty == NORMAL) {
+						playPanel.movePlayer(EM_SPEED, VECTOR[i][0], VECTOR[i][1]);
+					} else {
+						playPanel.movePlayer(HV_SPEED, VECTOR[i][0], VECTOR[i][1]);
+					}
 				}
 			}
 			
@@ -244,10 +244,20 @@ public class GamePanel extends JFXPanel implements Runnable {
 		g.fillRect(rightWallX, rightWallY, wallWidth, wallHeight);
 	}
 	
+	/**
+	 * そのキーの押下フラグを立てる
+	 * キーコードはこのクラスのクラス変数より選択する
+	 * @param key	キー
+	 */
 	public void setPressedKey(int key) {
 		pressedCrossKey[key] = true;
 	}
 	
+	/**
+	 * そのキーの押下フラグを倒す
+	 * キーコードはこのクラスのクラス変数より選択する
+	 * @param key	キー
+	 */
 	public void setReleasedKey(int key) {
 		pressedCrossKey[key] = false;
 	}
@@ -275,6 +285,10 @@ public class GamePanel extends JFXPanel implements Runnable {
 		}
 	}
 	
+	/**
+	 * ゲームプレイパネルを返す
+	 * @return ゲームプレイパネル
+	 */
 	public GamePlayPanel getPlayPanel() {
 		return playPanel;
 	}
